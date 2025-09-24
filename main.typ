@@ -46,6 +46,20 @@
 
 /* Custom set/show rules */
 
+// no numbering on headings above level 4
+// the following doesn't work bc we're overriding the heading show in lib
+// ```typ
+// #show heading: it => {
+//   if (it.level >= 4) {
+//     set heading(numbering: none)
+//     it
+//   } else { it }
+// }
+// ```
+#show heading.where(level: 4): set heading(numbering: none)
+#show heading.where(level: 5): set heading(numbering: none)
+
+
 // more space around figures
 // https://github.com/typst/typst/issues/6095#issuecomment-2755785839
 #show figure.where(kind: image).or(figure.where(kind: table)): it => {

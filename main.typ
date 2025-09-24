@@ -4,10 +4,10 @@
 
 #show: conf.with(
   degree: "Máster Universitario en Ingeniería Informática",
-  title: "TBD",
-  // short-title: "La mejor Memoria de la Historia",
+  title: "Implementing Interrupts, Timers, and Memory-Mapped I/O in CREATOR",
+  // short-title: "",
   author: "Luis Daniel Casais Mezquida",
-  advisors: ("Félix García Carballeira",),
+  advisors: ("Félix García Carballeira", "Alejandro Calderón Mateos"),
   location: "Leganés, Madrid",
   thesis-type: "TFM",
   date: datetime(year: 2026, month: 2, day: 20),
@@ -25,7 +25,9 @@
   ),
   abstract: (
     body: [Minor updates.],
-    keywords: ("Caca", "Culo", "Pedo", "Pis"), // see https://www.ieee.org/content/dam/ieee-org/ieee/web/org/pubs/ieee-taxonomy.pdf
+    // see
+    // https://www.ieee.org/content/dam/ieee-org/ieee/web/org/pubs/ieee-taxonomy.pdf
+    keywords: ("Computer science education", "Digital simulation"),
   ),
   acknowledgements: [Mi churri.],
   outlines: (

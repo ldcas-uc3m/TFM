@@ -1,0 +1,3 @@
+[submodule "uc3m-thesis-ieee-typst"]
+	path = uc3m-thesis-ieee-typst
+	url = git@github.com:guluc3m/uc3m-thesis-ieee-typst.git

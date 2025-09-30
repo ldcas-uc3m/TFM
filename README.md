@@ -5,9 +5,16 @@ Universidad Carlos III de Madrid
 
 
 ## Compilation
+> [!IMPORTANT]
+> Make sure to initialize the submodules.
+> 
+> You can either add the `--recurse-submodules` flag when doing `git clone` or
+> do `git submodule update --init --recursive` once it is already cloned.
+
+
 Install [Typst](https://github.com/typst/typst?tab=readme-ov-file#installation) and run:
 ```
-typst compile main.typ
+typst c main.typ
 ```
 
 > [!TIP]

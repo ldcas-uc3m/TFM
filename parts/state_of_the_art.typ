@@ -1,3 +1,6 @@
+#import "@preview/cetz:0.4.2"
+
+
 = State of the art
 
 
@@ -101,14 +104,63 @@ therefore there must be a mechanism to execute the correct one for each type.
 There are two approaches to this problem: _polled interrupts_ and _vectored
   interrupts_. In the former, the CPU branches to a specific handler address
 that typically evaluates the type of interrupt and branches to the handler for
-the specific type. The latter implements an _interrupt vector table_, a table
-containing _interrupt vectors_, addresses of interrupt handlers, and the CPU
-jumps to each entry depending on the interrupt type, or interrupt exception
-code. When the handler has finished, the CPU must restore the previous execution
-context and privilege mode. Most architectures include a special instruction to
-return from an interrupt with this functionality.
+the specific type. The latter, as shown in @fig:vectored-interrupts, implements
+an _interrupt vector table_, a table containing _interrupt vectors_, addresses
+of interrupt handlers, typically managed by the operating system. The CPU jumps
+to each entry depending on the interrupt type, or interrupt exception code. When
+the handler has finished, the CPU must restore the previous execution context
+and privilege mode. Most architectures include a special instruction to return
+from an interrupt with this functionality.
 
-// TODO: vectored interrupts diagram
+// vectored interrupts diagram
+#figure(
+  caption: [Vectored interrupts],
+  cetz.canvas({
+    import cetz.draw: *
+
+    let box-height = .5
+
+    set-style(content: (frame: "rect", stroke: none, fill: none, padding: .1))
+
+    // exception code
+    rect((), (rel: (3, box-height)), name: "type")
+    content("type", text(size: .8em)[`0x00000004`], anchor: "mid")
+    content((rel: (0, -.35), to: "type.south"), [Exception code])
+
+    line("type.north", (rel: (0, box-height)))
+    line((), (rel: (2, 0)), mark: (end: ">"))
+
+    // interrupt vector table
+    for i in range(4) {
+      let id = "iv" + str(i)
+
+      // interrupt vector
+      rect(
+        (4.5, -i * box-height + box-height * 5 / 2),
+        (rel: (4, box-height)),
+        name: id,
+      )
+      content((id), text(size: .8em)[Interrupt Vector #i], anchor: "mid")
+
+      // offset
+      content(
+        (rel: (-.1, 0), to: "iv" + str(i) + ".west"),
+        [`+`#raw(str(4 * i, base: 16))],
+        anchor: "mid-east",
+      )
+    }
+    content((rel: (0, .35), to: "iv0.north"), [Interrupt vector table])
+
+    // handler address
+    line("iv1.east", (rel: (1, 0)), mark: (end: ">"))
+    rect((rel: (0, -box-height / 2)), (rel: (3, box-height)), name: "handler")
+    content("handler", text(size: .8em)[`0x00c0ffee`])
+    content(
+      (rel: (0, .35), to: "handler.north"),
+      [Handler address],
+    )
+  }),
+) <fig:vectored-interrupts>
 
 
 

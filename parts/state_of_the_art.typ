@@ -83,7 +83,7 @@ _fatal trap_, which #quote[represents a fatal failure and causes the execution
   environment to terminate execution] @RISCVUnprivileged[chap. 1.6].
 
 
-=== Interrupt Detection and Handling
+=== Interrupt Detection and Handling <subsec:interrupt-handling>
 // pins
 CPUs that support interrupts have an interupt request (_IRQ_) pin and an
 interrupt acknowledge (_INTA_) pin, sometimes mapped to a register. When an
@@ -144,11 +144,26 @@ return from an interrupt with this functionality.
 
 
 
-==== Interrupts in the RISC-V ISA
+==== Interrupts on the RISC-V ISA
+// privilege levels
+As mentioned in @subsec:interrupt-handling, the RISC-V ISA defines different
+privilege modes that determine the level of access and control a process has
+over the system's resources levels, in particular, access to _Control Status
+  Registers_ (CSRs), the privileged instruction set, and privileged ISA
+extensions. The ISA defines three levels: User/Application (U), Supervisor (S),
+and Machine (M), allowing implementations to provide one, two, or three of them
+#footnote[There are only three supported combinations of privilege modes:
+  M-mode, M-mode and U-mode, or all three.]. M-mode is the highest privilege
+mode, while U-mode is intended for conventional applications and S-mode for
+operating systems @RISCVPrivileged[chap. 1.2].
+
+// traps
+@RISCVUnprivileged[chap. 1.6]
 
 
-==== Interrupts in the Z80 CPU
-As mentioned in @subsec:interrupt-taxonomy, the Z80 CPU contains two types on
+==== Interrupts on the Z80 CPU
+// detection
+As discussed in @subsec:interrupt-taxonomy, the Z80 CPU contains two types on
 interrupts, _maskable_, which can be enabled or disabled by the programmer, and
 _nonmaskable_, which can't be disabled. To control this, there is an interrupt
 enable flip-flop (IFF) that can be either set or reset by the user using
@@ -156,8 +171,9 @@ specialized instructions. To account for nonmaskable interrupts, this flip-flop
 is split into two, IFF1 and IFF2. When a nonmaskable interrupt ocurs, the status
 of IFF1 is stored in IFF2, and IFF1 is reset to prevent maskable interrupts from
 interrupting the handler. When the interrupt handler finishes (triggered by the
-RTEN instruction), the original value is restored to IFF1 @ZilogZ80[pp. 17-20].
+RTEN instruction), the original value is restored to IFF1 @ZilogZ80[pp. 17-18].
 
+// handling
 While nonmaskable interrupts are always handled by restarting the CPU at address
 `0x0066`, maskable interrupts can be handled by one of the three possible modes,
 set by the programmer. In mode 0, the interrupting device places the next
@@ -165,7 +181,7 @@ instruction on the data bus, and the CPU executes it. Mode 1 behaves similar to
 nonmaskable interrupts, by restarting at address `0x0038`. Finally, mode 3
 implements vectored interrupts, using a 16-bit pointer. The upper eight bits of
 the pointer are set by the contents of register I, while the lower eight bits
-are supplied by the interrupting device.
+are supplied by the interrupting device @ZilogZ80[pp. 19-20].
 
 
 

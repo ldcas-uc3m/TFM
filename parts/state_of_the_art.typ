@@ -3,11 +3,12 @@
 
 == Assembly simulators
 
-=== RISC-V Simulators
-@SpikeRISCV @VenusRISCV @VenusVSCode
+=== Specific Simulators
+// RISC-V
+@SpikeRISCV @VenusRISCV @VenusVSCode @HaoziwanSim
 
+// Z-80
 
-=== Z-80 Simulators
 
 === Generic simulators
 @SpecySim
@@ -28,7 +29,7 @@ stopping the current execution of the program due to an exceptional situation.
 In this thesis, we'll use _interrupt_.
 
 
-=== Interrupt Taxonomy
+=== Interrupt Taxonomy <subsec:interrupt-taxonomy>
 // bookz
 Patterson and Hennery @Patterson2021Exceptions use the term _exception_ to refer
 to #quote[[a]n unescheduled event that disrupts program execution; used to
@@ -63,23 +64,23 @@ several clock cycles, and an error during the execution of an instruction
 compromises the pipeline and requires inmmediate attention.
 
 // Z80 & RISC-V
-While the Z80 ISA @ZilogZ80 only differentiates between _software maskable
-  interrupts_ and _nonmaskable interrupts_, the RISC-V ISA @RISCVUnprivileged
-uses the term _exception_ as #quote[an unusual condition occurring at run time
-  associated with an instruction], while an _interrupt_ is #quote[an external
-  asynchronous event that may cause a RISC-V hart to experience an unexpected
-  transfer of control]. It also defines a _trap_ as #quote[the transfer of
-  control to a trap handler caused by either an exception or an interrupt], and
-distinguishes between _contained_ traps, where #quote[[t]he trap is visible to,
-  and handled by, software running inside the execution environment], _requested
-  trap_ where #quote[[t]he trap is a synchronous exception that is an explicit
-  call to the execution environment requesting an action on behalf of software
-  inside the execution environment], and #quote[execution may or may not resume
-  on the hart after the requested action is taken by the execution environment];
-_invisible traps_, where #quote[[t]he trap is handled transparently by the
-  execution environment and execution resumes normally after the trap is
-  handled]; and a _fatal trap_, which #quote[represents a fatal failure and
-  causes the execution environment to terminate execution].
+While the Z80 CPU only differentiates between _software maskable interrupts_ and
+_nonmaskable interrupts_ @ZilogZ80[p. 17], the RISC-V ISA uses the term
+_exception_ as #quote[an unusual condition occurring at run time associated with
+  an instruction], while an _interrupt_ is #quote[an external asynchronous event
+  that may cause a RISC-V hart to experience an unexpected transfer of control].
+It also defines a _trap_ as #quote[the transfer of control to a trap handler
+  caused by either an exception or an interrupt], and distinguishes between
+_contained_ traps, where #quote[[t]he trap is visible to, and handled by,
+  software running inside the execution environment], _requested trap_ where
+#quote[[t]he trap is a synchronous exception that is an explicit call to the
+  execution environment requesting an action on behalf of software inside the
+  execution environment], and #quote[execution may or may not resume on the hart
+  after the requested action is taken by the execution environment]; _invisible
+  traps_, where #quote[[t]he trap is handled transparently by the execution
+  environment and execution resumes normally after the trap is handled]; and a
+_fatal trap_, which #quote[represents a fatal failure and causes the execution
+  environment to terminate execution] @RISCVUnprivileged[chap. 1.6].
 
 
 === Interrupt Detection and Handling
@@ -127,10 +128,13 @@ that typically evaluates the type of interrupt and branches to the handler for
 the specific type. The latter, as shown in @fig:vectored-interrupts, implements
 an _interrupt vector table_, a table containing _interrupt vectors_, addresses
 of interrupt handlers, typically managed by the operating system. The CPU jumps
-to each entry depending on the interrupt type, or interrupt exception code. When
-the handler has finished, the CPU must restore the previous execution context
-and privilege mode. Most architectures include a special instruction to return
-from an interrupt with this functionality.
+to each entry specified in the _interrupt register_. This register is typically
+divided into the base address of the interrupt vector table and the interrupt
+type, or interrupt exception code, allowing users to specify the address of the
+table. Once the handler has finished, usually signaled by some kind of special
+"return from interrupt" instruction, the CPU must restore the previous execution
+context and privilege mode. Most architectures include a special instruction to
+return from an interrupt with this functionality.
 
 // vectored interrupts diagram
 #figure(
@@ -143,7 +147,27 @@ from an interrupt with this functionality.
 ==== Interrupts in the RISC-V ISA
 
 
-==== Interrupts in the Z80 ISA
+==== Interrupts in the Z80 CPU
+As mentioned in @subsec:interrupt-taxonomy, the Z80 CPU contains two types on
+interrupts, _maskable_, which can be enabled or disabled by the programmer, and
+_nonmaskable_, which can't be disabled. To control this, there is an interrupt
+enable flip-flop (IFF) that can be either set or reset by the user using
+specialized instructions. To account for nonmaskable interrupts, this flip-flop
+is split into two, IFF1 and IFF2. When a nonmaskable interrupt ocurs, the status
+of IFF1 is stored in IFF2, and IFF1 is reset to prevent maskable interrupts from
+interrupting the handler. When the interrupt handler finishes (triggered by the
+RTEN instruction), the original value is restored to IFF1 @ZilogZ80[pp. 17-20].
+
+While nonmaskable interrupts are always handled by restarting the CPU at address
+`0x0066`, maskable interrupts can be handled by one of the three possible modes,
+set by the programmer. In mode 0, the interrupting device places the next
+instruction on the data bus, and the CPU executes it. Mode 1 behaves similar to
+nonmaskable interrupts, by restarting at address `0x0038`. Finally, mode 3
+implements vectored interrupts, using a 16-bit pointer. The upper eight bits of
+the pointer are set by the contents of register I, while the lower eight bits
+are supplied by the interrupting device.
+
+
 
 
 === Interrupt Simulation Implementations

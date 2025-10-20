@@ -72,13 +72,13 @@ _exception_ as #quote[an unusual condition occurring at run time associated with
 It also defines a _trap_ as #quote[the transfer of control to a trap handler
   caused by either an exception or an interrupt], and distinguishes between
 _contained_ traps, where #quote[[t]he trap is visible to, and handled by,
-  software running inside the execution environment], _requested trap_ where
+  software running inside the execution environment]\; _requested traps_, where
 #quote[[t]he trap is a synchronous exception that is an explicit call to the
   execution environment requesting an action on behalf of software inside the
   execution environment], and #quote[execution may or may not resume on the hart
-  after the requested action is taken by the execution environment]; _invisible
+  after the requested action is taken by the execution environment]\; _invisible
   traps_, where #quote[[t]he trap is handled transparently by the execution
-  environment and execution resumes normally after the trap is handled]; and a
+  environment and execution resumes normally after the trap is handled]\; and a
 _fatal trap_, which #quote[represents a fatal failure and causes the execution
   environment to terminate execution] @RISCVUnprivileged[chap. 1.6].
 
@@ -144,21 +144,44 @@ return from an interrupt with this functionality.
 
 
 
-==== Interrupts on the RISC-V ISA
+==== Interrupts on the RISC-V-32 ISA
 // privilege levels
-As mentioned in @subsec:interrupt-handling, the RISC-V ISA defines different
+As mentioned in @subsec:interrupt-handling, the RISC-V-32 ISA defines different
 privilege modes that determine the level of access and control a process has
 over the system's resources levels, in particular, access to _Control Status
   Registers_ (CSRs), the privileged instruction set, and privileged ISA
 extensions. The ISA defines three levels: User/Application (U), Supervisor (S),
 and Machine (M), allowing implementations to provide one, two, or three of them
-#footnote[There are only three supported combinations of privilege modes:
-  M-mode, M-mode and U-mode, or all three.]. M-mode is the highest privilege
-mode, while U-mode is intended for conventional applications and S-mode for
-operating systems @RISCVPrivileged[chap. 1.2].
+#footnote[There are only three supported combinations: M-level, M-level and
+  U-level, or all three.]. M-level is the highest privilege level, while U-level
+is intended for conventional applications and S-level for operating systems
+@RISCVPrivileged[chap. 1.2].
 
 // traps
-@RISCVUnprivileged[chap. 1.6]
+RISC-V handles exceptions and interrupts, as stated in
+@subsec:interrupt-taxonomy, by generating a trap. As a trap involves elevating
+the privilege level, e.g. requesting an OS system call from a user program, both
+M and S privilege levels include a set of CSRs for handling them#footnote[As
+  they are virtually the same, we'll only describe the M-level set.]. The
+`mstatus` register keeps track of and controls the CPU's current operating
+state.
+
+#let csr-figure(csr) = [
+  #figure(
+    box(
+      width: 75%,
+      include "/diagrams/rv32/" + csr + ".typ",
+    ),
+    caption: [#raw(csr) register],
+  ) #label("fig:" + csr)
+]
+
+#csr-figure("mstatus")
+#csr-figure("mie")
+#csr-figure("mcause")
+#csr-figure("mip")
+
+@RISCVUnprivileged[chap. 3.1]
 
 
 ==== Interrupts on the Z80 CPU

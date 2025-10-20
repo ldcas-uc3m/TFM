@@ -1,3 +1,5 @@
+// LTeX: enabled=false
+
 #import "uc3m-thesis-ieee-typst/lib.typ": conf
 #import "glossary.typ": glossary-entries
 
@@ -81,6 +83,10 @@
     ))
   }
 }
+
+// indent lists
+#set list(indent: 1em)
+#set enum(indent: 1em)
 
 
 

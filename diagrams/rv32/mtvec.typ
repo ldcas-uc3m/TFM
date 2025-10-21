@@ -10,8 +10,8 @@
         main: (
           bits: 32,
           ranges: (
-            "0-30": (name: "Exception Code"),
-            "31": (name: "I"),
+            "0-1": (name: "MODE"),
+            "2-31": (name: "BASE"),
           ),
         ),
       ),

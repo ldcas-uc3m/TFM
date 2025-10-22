@@ -58,8 +58,13 @@
 //   } else { it }
 // }
 // ```
-#show heading.where(level: 4): set heading(numbering: none)
-#show heading.where(level: 5): set heading(numbering: none)
+#show (
+  heading
+    .where(level: 4)
+    .or(
+      heading.where(level: 5),
+    )
+): set heading(numbering: none)
 
 
 // more space around figures
@@ -83,10 +88,19 @@
 #set list(indent: 1em)
 #set enum(indent: 1em)
 
-// "booktab" tables
+// prevent floating elements from spilling into the next section
+#show heading.where(level: 2): it => {
+  place.flush()
+  it
+}
+
+// "booktab" table style
 #show table: block.with(stroke: (y: 0.7pt))
 #set table(column-gutter: .2em, stroke: none)
 #set table.hline(stroke: 0.4pt)
+
+// code font
+#show raw: set text(font: "CaskaydiaCove NFM")
 
 
 /* Thesis */

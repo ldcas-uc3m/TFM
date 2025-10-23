@@ -193,27 +193,31 @@ register (@fig:mie) allows for a finer control of interrupts, allowing the
 programmer to set which types of interrupts are enabled: field `MSIE` (_Machine
   Software Interrupt Enable_), `MTIE` (_Machine Timer Interrupt Enable_), and
 `MEIE` (_Machine External Interrupt Enable_) control software, timer, and
-external interrupts, respectively. Finally, the `mip` (_Machine Interrupt
-  Pending_) register (@fig:mip) indicates the interrrupts that are currently
-pending. Similarly to register `mie`, it specifies the type of interrupt on
-specific fields: `MSIP` (_Machine Software Interrupt Pending_), `MTIP` (_Machine
-  Timer Interrupt Pending_), and `MEIP` (_Machine External Interrupt Pending_).
-Register `mcause` (_Machine Cause_) (@fig:mcause) provides information about the
-event that caused the trap. This register contains a field `I` specifying if the
-cause was an interrupt or an exception, while the rest of the bits are reserved
-for the exception code. RISC-V defines some of these exception codes (see
+external interrupts, respectively. The `mip` (_Machine Interrupt Pending_)
+register (@fig:mip) indicates the interrrupts that are currently pending.
+Similarly to register `mie`, it specifies the type of interrupt on specific
+fields: `MSIP` (_Machine Software Interrupt Pending_), `MTIP` (_Machine Timer
+  Interrupt Pending_), and `MEIP` (_Machine External Interrupt Pending_). Each
+of these fields may be writable or may be read-only. Register `mcause` (_Machine
+  Cause_, @fig:mcause) provides information about the event that caused the
+trap. This register contains a field `I` specifying if the cause was an
+interrupt or an exception, while the rest of the bits are reserved for the
+exception code. RISC-V defines some of these exception codes (see
 @tab:rv32-excodes), while others are left for the implementation to use.
-Register `mtvec` (_Machine Trap-Vector Base-Address_) (@fig:mtvec) holds the
-trap vector configuration. Depending on the value of the `MODE` field, RISC-V
-allows for polled interrupts (_direct mode_, with a value of `0`) or vectored
+Register `mtvec` (_Machine Trap-Vector Base-Address_, @fig:mtvec) holds the trap
+vector configuration. Depending on the value of the `MODE` field, RISC-V allows
+for polled interrupts (_direct mode_, with a value of `0`) or vectored
 interrupts (_vectored mode_, with a value of `1`). In direct mode, all traps
 cause the PC to be set to the address in the `BASE` field, while on vectored
 mode, traps set the PC to address $mono("BASE") + 4 times italic("cause")$,
-_cause_ being the exception code found in `mcause` @RISCVUnprivileged[chap. 3.1]
-@Bulić2024[chap. 2.5.2].
+_cause_ being the exception code found in `mcause`. Finally, register `mepc`
+(_Machine Exception Program Counter_, @fig:mepc) holds the address of the
+instruction that generated the exception while it is handled
+@RISCVUnprivileged[chap. 3.1] @Bulić2024[chap. 2.5.2].
 
 #csr-figure("mcause")
 #csr-figure("mtvec")
+#csr-figure("mepc")
 #figure(
   table(
     columns: 3,
@@ -229,9 +233,21 @@ _cause_ being the exception code found in `mcause` @RISCVUnprivileged[chap. 3.1]
 
 
 // handling
-When a trap is taken to M-mode, the `MIE` field is checked and, if interr
-
-@RISCVUnprivileged[chap. 3.3] @Bulić2024[chap. 2.5.4].
+When a trap is taken to M-mode, the corresponding flag in `mip` is set, and the
+`MIE` field in `mstatus` and the corresponding flag in `mie` are checked to
+determine if that interrupt is enabled. If it's enabled, the `MIE` field is
+copied into the `MPIE` field of `mstatus` and `MIE` is cleared, disabling
+further interrupts. Then, the previous privilege mode is stored in the `MPP`
+field of `mstatus`, the cause of the exception is encoded into `mcause`, the
+current PC is stored into the `mepc` register, and the PC is set to the address
+specified by `mtvec`. When the interrupt handler finishes, it calls `mret`,
+which resets the privilege mode (reading the `MPP` field in `mstatus`),
+re-enables interrupts (by copying back field `MPIE` to `MIE` in `mstatus`), and
+sets the PC to the value of `mepc`. With regard to the `mip` register, the ISA
+states that if the field is writable, a pending interrupt can be cleared by
+clearing it, but if the field is read-only, the implementation must provide some
+other mechanism for clearing the pending interrupt @RISCVUnprivileged[chap. 3.3]
+@Bulić2024[chap. 2.5.4].
 
 
 ==== Interrupts on the Z80 CPU
@@ -239,12 +255,13 @@ When a trap is taken to M-mode, the `MIE` field is checked and, if interr
 As discussed in @subsec:interrupt-taxonomy, the Z80 CPU contains two types on
 interrupts, _maskable_, which can be enabled or disabled by the programmer, and
 _nonmaskable_, which can't be disabled. To control this, there is an interrupt
-enable flip-flop (IFF) that can be either set or reset by the user using
+enable flip-flop (`IFF`) that can be either set or reset by the user using
 specialized instructions. To account for nonmaskable interrupts, this flip-flop
-is split into two, IFF1 and IFF2. When a nonmaskable interrupt ocurs, the status
-of IFF1 is stored in IFF2, and IFF1 is reset to prevent maskable interrupts from
-interrupting the handler. When the interrupt handler finishes (triggered by the
-RTEN instruction), the original value is restored to IFF1 @ZilogZ80[pp. 17--18].
+is split into two, `IFF1` and `IFF2`. When a nonmaskable interrupt ocurs, the
+status of `IFF1` is stored in `IFF2`, and `IFF1` is reset to prevent maskable
+interrupts from interrupting the handler. When the interrupt handler finishes
+(triggered by the `RTEN` instruction), the original value is restored to IFF1
+@ZilogZ80[pp. 17--18].
 
 // handling
 While nonmaskable interrupts are always handled by restarting the CPU at address
@@ -253,7 +270,7 @@ set by the programmer. In mode 0, the interrupting device places the next
 instruction on the data bus, and the CPU executes it. Mode 1 behaves similar to
 nonmaskable interrupts, by restarting at address `0x0038`. Finally, mode 3
 implements vectored interrupts, using a 16-bit pointer. The upper eight bits of
-the pointer are set by the contents of register I, while the lower eight bits
+the pointer are set by the contents of register `I`, while the lower eight bits
 are supplied by the interrupting device @ZilogZ80[pp. 19--20].
 
 

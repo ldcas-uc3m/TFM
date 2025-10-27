@@ -1,28 +1,7 @@
 #import "/utils.typ": *
 
+
 = State of the art
-
-
-== Assembly simulators
-
-=== Specific Simulators
-// RISC-V
-@SpikeRISCV @VenusRISCV @VenusVSCode @HaoziwanSim
-
-// Z-80
-
-
-=== Generic simulators
-@SpecySim
-
-==== SAIL
-@SAIL
-@SailRISCV
-@Cano2025SAILATOR
-
-==== CREATOR
-@Camarmas2021CREATOR
-
 
 
 == Interrupts
@@ -152,13 +131,15 @@ return from an interrupt with this functionality.
 As mentioned in @subsec:interrupt-handling, the RISC-V-32 ISA defines different
 privilege modes that determine the level of access and control a process has
 over the system's resources levels, in particular, access to _Control Status
-  Registers_ (CSRs), the privileged instruction set, and privileged ISA
-extensions. The ISA defines three levels: User/Application (U), Supervisor (S),
-and Machine (M), allowing implementations to provide one, two, or three of them
-#footnote[There are only three supported combinations: M-level, M-level and
-  U-level, or all three.]. M-level is the highest privilege level, while U-level
-is intended for conventional applications and S-level for operating systems
-@RISCVPrivileged[chap. 1.2] @Bulić2024[chap. 2.5.1].
+  Registers_ (CSRs)#footnote[The set of instructions to control CSRs is provided
+  in the _Zicsr_ extension @RISCVUnprivileged[chap. 7].], the privileged
+instruction set, and privileged ISA extensions. The ISA defines three levels:
+User/Application (U), Supervisor (S), and Machine (M), allowing implementations
+to provide one, two, or three of them #footnote[There are only three supported
+  combinations: M-level, M-level and U-level, or all three.]. M-level is the
+highest privilege level, while U-level is intended for conventional applications
+and S-level for operating systems @RISCVPrivileged[chap. 1.2] @Bulić2024[chap.
+  2.5.1].
 
 // CSRs
 
@@ -275,14 +256,45 @@ are supplied by the interrupting device @ZilogZ80[pp. 19--20].
 
 
 
+== Interrupt Simulation
 
-=== Interrupt Simulation Implementations
+@SpikeRISCV
+// spike usa CLINT (memory-mapped registers) para simular los registros
+// Spike has timer interrupts and software interrupts. Take a look at the Clint
+// interrupt controller. Basically, you write mtimecmp with a value larger than
+// what is in mtime right now. After some time, mtime will become larger than
+// mtimecmp, and a timer irq will be set pending in mip. You also need to set
+// mstatus.mie = 1 and mie.mti = 1 for the interrupt to occur. If you execute a
+// wfi on a single core system, a timer irq is the easiest way to control when
+// the core should wake up. On a multi hart machine, you can send a software
+// interrupt to wake up the waiting hart.
+
+@VenusRISCV @VenusVSCode
+// venus soporta CSRs no soporta interrupciones, pero sí extension Zicsr
 
 
-==== Wepsim
+
+@HaoziwanSim
+// ni soporta CSRs ni hostias
+
+@SpecySim @RARSSim
+// usa RARS
+// RARS: The implementation of user-mode exception handlers in RARS is not
+// complete and does not fully conform to the RISC-V privilidged specification
+
+@SAIL
+@SailRISCV
+// implementa la ISA
+
+@Cano2025SAILATOR
+// usa interrupciones para el ecall, el cual llama al kernel
 
 
-==== CREATOR
+
+@wepsim2016a
+@wepsimHandbook
+
+
 CREATOR @Camarmas2024CREATOR version 3.3 included some initial support for
 interrupts, specifically in the MIPS architecture.
 

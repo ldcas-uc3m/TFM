@@ -9,7 +9,7 @@
   title: "Implementing Interrupts, Timers, and Memory-Mapped I/O in CREATOR",
   // short-title: "",
   author: "Luis Daniel Casais Mezquida",
-  advisors: ("Félix García Carballeira", "Alejandro Calderón Mateos"),
+  advisors: ("Alejandro Calderón Mateos",),
   location: "Leganés, Madrid",
   thesis-type: "TFM",
   date: datetime(year: 2026, month: 2, day: 20),
@@ -26,7 +26,7 @@
     // source: "",
   ),
   abstract: (
-    body: [Minor updates.],
+    body: [Major updates.],
     // see
     // https://www.ieee.org/content/dam/ieee-org/ieee/web/org/pubs/ieee-taxonomy.pdf
     keywords: ("Computer science education", "Digital simulation"),

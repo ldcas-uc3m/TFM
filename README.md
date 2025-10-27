@@ -12,6 +12,14 @@ Universidad Carlos III de Madrid
 > do `git submodule update --init --recursive` once it is already cloned.
 
 
+> [!WARNING]
+> Make sure to install the [CaskaydiaCove Nerd Font Mono](https://github.com/ryanoasis/nerd-fonts/releases/download/v3.4.0/CascadiaCode.zip) font, or change the raw text font in [`report.typ`](report.typ).  
+>
+> More info:
+> - [Typst docs](https://typst.app/docs/reference/text/text/#parameters-font)
+> - You can check out your system fonts using `typst fonts`.
+
+
 Install [Typst](https://github.com/typst/typst?tab=readme-ov-file#installation) and run:
 ```
 typst c main.typ

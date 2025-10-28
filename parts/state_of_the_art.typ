@@ -257,6 +257,8 @@ are supplied by the interrupting device @ZilogZ80[pp. 19--20].
 
 
 == Interrupt Simulation
+@YAZESim
+// lo simula como descrito
 
 @SpikeRISCV
 // spike usa CLINT (memory-mapped registers) para simular los registros

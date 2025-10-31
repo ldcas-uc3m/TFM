@@ -16,11 +16,11 @@
 /// - height (ratio, auto): Desired heigth (relative to its container)
 /// -> content
 #let scale-to-container(body, width: auto, height: auto) = layout(ly => {
-  let body-size = measure(body)
+  if width == auto and height == auto { return body }
 
   scale(
-    x: if width == auto { auto } else { ly.width / body-size.width * width },
-    y: if height == auto { auto } else { ly.height / body-size.height * height },
+    x: if width == auto { auto } else { ly.width * width },
+    y: if height == auto { auto } else { ly.height * height },
     reflow: true,
     body,
   )

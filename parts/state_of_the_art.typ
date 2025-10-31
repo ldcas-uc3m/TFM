@@ -126,7 +126,7 @@ return from an interrupt with this functionality.
 
 
 
-==== Interrupts on the RISC-V-32 ISA
+==== Interrupts on the RISC-V-32 ISA <sec:rv32-interrupts>
 // privilege levels
 As mentioned in @subsec:interrupt-handling, the RISC-V-32 ISA defines different
 privilege modes that determine the level of access and control a process has
@@ -145,10 +145,10 @@ and S-level for operating systems @RISCVPrivileged[chap. 1.2] @Bulić2024[chap.
 
 #let csr-figure(csr) = [
   #figure(
-    box(
-      width: 75%,
-      include "/diagrams/rv32/" + csr + ".typ",
-    ),
+    // scale-to-container(
+    //   width: 75%,
+    include "/diagrams/rv32/" + csr + ".typ",
+    // ),
     caption: [#raw(csr) register],
     placement: auto,
   ) #label("fig:" + csr)
@@ -192,13 +192,13 @@ interrupts (_vectored mode_, with a value of `1`). In direct mode, all traps
 cause the PC to be set to the address in the `BASE` field, while on vectored
 mode, traps set the PC to address $mono("BASE") + 4 times italic("cause")$,
 _cause_ being the exception code found in `mcause`. Finally, register `mepc`
-(_Machine Exception Program Counter_, @fig:mepc) holds the address of the
-instruction that generated the exception while it is handled
-@RISCVUnprivileged[chap. 3.1] @Bulić2024[chap. 2.5.2].
+(_Machine Exception Program Counter_) holds the address of the instruction that
+generated the exception while it is handled @RISCVUnprivileged[chap. 3.1]
+@Bulić2024[chap. 2.5.2].
 
 #csr-figure("mcause")
 #csr-figure("mtvec")
-#csr-figure("mepc")
+// #csr-figure("mepc")
 #figure(
   table(
     columns: 3,
@@ -257,33 +257,21 @@ are supplied by the interrupting device @ZilogZ80[pp. 19--20].
 
 
 == Interrupt Simulation
-@YAZESim
-// lo simula como descrito
+// TODO: blah blah assembly simulators
 
-@SpikeRISCV
-// spike usa CLINT (memory-mapped registers) para simular los registros
-// Spike has timer interrupts and software interrupts. Take a look at the Clint
-// interrupt controller. Basically, you write mtimecmp with a value larger than
-// what is in mtime right now. After some time, mtime will become larger than
-// mtimecmp, and a timer irq will be set pending in mip. You also need to set
-// mstatus.mie = 1 and mie.mti = 1 for the interrupt to occur. If you execute a
-// wfi on a single core system, a timer irq is the easiest way to control when
-// the core should wake up. On a multi hart machine, you can send a software
-// interrupt to wake up the waiting hart.
+// specific simulators
+In ISAs that have well-defined simple interrupt mechanisms, simulators such as
+@YAZESim, usually implement this interrupt mechanism as described. On the other
+hand, ISAs that give the manufacturer flexibility to implement its features as
+they want, like the RISC-V ISA, varie more. @SpikeRISCV, one the reference
+RISC-V simulator, has support for the Core Local Interrupt (CLINT) controller
+@CLINT, which implements the registers described in @subsec:interrupt-handling
+as memory-mapped registers, providing support for both interrupts and timers.
+Other simulators, like @VenusRISCV, support the Zicsr extension and include
+those registers, but don't support interrupts, while simulators like
+@HaoziwanSim don't even support that extension.
 
-@VenusRISCV @VenusVSCode
-// venus soporta CSRs no soporta interrupciones, pero sí extension Zicsr
-
-
-
-@HaoziwanSim
-// ni soporta CSRs ni hostias
-
-@SpecySim @RARSSim
-// usa RARS
-// RARS: The implementation of user-mode exception handlers in RARS is not
-// complete and does not fully conform to the RISC-V privilidged specification
-
+// generic simulators
 @SAIL
 @SailRISCV
 // implementa la ISA
@@ -291,7 +279,11 @@ are supplied by the interrupting device @ZilogZ80[pp. 19--20].
 @Cano2025SAILATOR
 // usa interrupciones para el ecall, el cual llama al kernel
 
-
+// educational simulators
+@SpecySim @RARSSim
+// usa RARS
+// RARS: The implementation of user-mode exception handlers in RARS is not
+// complete and does not fully conform to the RISC-V privilidged specification
 
 @wepsim2016a
 @wepsimHandbook
@@ -299,6 +291,8 @@ are supplied by the interrupting device @ZilogZ80[pp. 19--20].
 
 CREATOR @Camarmas2024CREATOR version 3.3 included some initial support for
 interrupts, specifically in the MIPS architecture.
+
+// TODO: plot simulators along specific/educational axis
 
 
 == Timers

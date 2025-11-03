@@ -58,7 +58,7 @@ _contained_ traps, where #quote[[t]he trap is visible to, and handled by,
   execution environment requesting an action on behalf of software inside the
   execution environment], and #quote[execution may or may not resume on the hart
   after the requested action is taken by the execution environment]\; _invisible
-  traps_, where #quote[[t]he trap is handled transparently by the execution
+traps_, where #quote[[t]he trap is handled transparently by the execution
   environment and execution resumes normally after the trap is handled]\; and a
 _fatal trap_, which #quote[represents a fatal failure and causes the execution
   environment to terminate execution] @RISCVUnprivileged[chap. 1.6].
@@ -104,12 +104,12 @@ execution, also trigger this change.
 Different types of interrupts require different procedures to handle them,
 therefore there must be a mechanism to execute the correct one for each type.
 There are two approaches to this problem: _polled interrupts_ and _vectored
-  interrupts_. In the former, the CPU branches to a specific handler address
-that typically evaluates the type of interrupt and branches to the handler for
-the specific type. The latter, as shown in @fig:vectored-interrupts, implements
-an _interrupt vector table_, a table containing _interrupt vectors_, addresses
-of interrupt handlers, typically managed by the operating system. The CPU jumps
-to each entry specified in the _interrupt register_. This register is typically
+interrupts_. In the former, the CPU branches to a specific handler address that
+typically evaluates the type of interrupt and branches to the handler for the
+specific type. The latter, as shown in @fig:vectored-interrupts, implements an
+_interrupt vector table_, a table containing _interrupt vectors_, addresses of
+interrupt handlers, typically managed by the operating system. The CPU jumps to
+each entry specified in the _interrupt register_. This register is typically
 divided into the base address of the interrupt vector table and the interrupt
 type, or interrupt exception code, allowing users to specify the address of the
 table. Once the handler has finished, usually signaled by some kind of special
@@ -131,7 +131,7 @@ return from an interrupt with this functionality.
 As mentioned in @subsec:interrupt-handling, the RISC-V-32 ISA defines different
 privilege modes that determine the level of access and control a process has
 over the system's resources levels, in particular, access to _Control Status
-  Registers_ (CSRs)#footnote[The set of instructions to control CSRs is provided
+Registers_ (CSRs)#footnote[The set of instructions to control CSRs is provided
   in the _Zicsr_ extension @RISCVUnprivileged[chap. 7].], the privileged
 instruction set, and privileged ISA extensions. The ISA defines three levels:
 User/Application (U), Supervisor (S), and Machine (M), allowing implementations
@@ -146,9 +146,10 @@ and S-level for operating systems @RISCVPrivileged[chap. 1.2] @Bulić2024[chap.
 #let csr-figure(csr) = [
   #figure(
     // scale-to-container(
-    //   width: 75%,
-    include "/diagrams/rv32/" + csr + ".typ",
-    // ),
+    box(
+      width: 75%,
+      include "/diagrams/rv32/" + csr + ".typ",
+    ),
     caption: [#raw(csr) register],
     placement: auto,
   ) #label("fig:" + csr)
@@ -172,29 +173,28 @@ mode, and, to allow nesting of interrupts, field `MPIE` stores the previous
 value of `MIE` when an interrupt occurs. The `mie` (_Machine Interrupt Enable_)
 register (@fig:mie) allows for a finer control of interrupts, allowing the
 programmer to set which types of interrupts are enabled: field `MSIE` (_Machine
-  Software Interrupt Enable_), `MTIE` (_Machine Timer Interrupt Enable_), and
+Software Interrupt Enable_), `MTIE` (_Machine Timer Interrupt Enable_), and
 `MEIE` (_Machine External Interrupt Enable_) control software, timer, and
 external interrupts, respectively. The `mip` (_Machine Interrupt Pending_)
 register (@fig:mip) indicates the interrrupts that are currently pending.
 Similarly to register `mie`, it specifies the type of interrupt on specific
 fields: `MSIP` (_Machine Software Interrupt Pending_), `MTIP` (_Machine Timer
-  Interrupt Pending_), and `MEIP` (_Machine External Interrupt Pending_). Each
-of these fields may be writable or may be read-only. Register `mcause` (_Machine
-  Cause_, @fig:mcause) provides information about the event that caused the
-trap. This register contains a field `I` specifying if the cause was an
-interrupt or an exception, while the rest of the bits are reserved for the
-exception code. RISC-V defines some of these exception codes (see
-@tab:rv32-excodes), while others are left for the implementation to use.
-Register `mtvec` (_Machine Trap-Vector Base-Address_, @fig:mtvec) holds the trap
-vector configuration. Depending on the value of the `MODE` field, RISC-V allows
-for polled interrupts (_direct mode_, with a value of `0`) or vectored
-interrupts (_vectored mode_, with a value of `1`). In direct mode, all traps
-cause the PC to be set to the address in the `BASE` field, while on vectored
-mode, traps set the PC to address $mono("BASE") + 4 times italic("cause")$,
-_cause_ being the exception code found in `mcause`. Finally, register `mepc`
-(_Machine Exception Program Counter_) holds the address of the instruction that
-generated the exception while it is handled @RISCVUnprivileged[chap. 3.1]
-@Bulić2024[chap. 2.5.2].
+Interrupt Pending_), and `MEIP` (_Machine External Interrupt Pending_). Each of
+these fields may be writable or may be read-only. Register `mcause` (_Machine
+Cause_, @fig:mcause) provides information about the event that caused the trap.
+This register contains a field `I` specifying if the cause was an interrupt or
+an exception, while the rest of the bits are reserved for the exception code.
+RISC-V defines some of these exception codes (see @tab:rv32-excodes), while
+others are left for the implementation to use. Register `mtvec` (_Machine
+Trap-Vector Base-Address_, @fig:mtvec) holds the trap vector configuration.
+Depending on the value of the `MODE` field, RISC-V allows for polled interrupts
+(_direct mode_, with a value of `0`) or vectored interrupts (_vectored mode_,
+with a value of `1`). In direct mode, all traps cause the PC to be set to the
+address in the `BASE` field, while on vectored mode, traps set the PC to address
+$mono("BASE") + 4 times italic("cause")$, _cause_ being the exception code found
+in `mcause`. Finally, register `mepc` (_Machine Exception Program Counter_)
+holds the address of the instruction that generated the exception while it is
+handled @RISCVUnprivileged[chap. 3.1] @Bulić2024[chap. 2.5.2].
 
 #csr-figure("mcause")
 #csr-figure("mtvec")
@@ -261,25 +261,21 @@ are supplied by the interrupting device @ZilogZ80[pp. 19--20].
 
 // specific simulators
 In ISAs that have well-defined simple interrupt mechanisms, simulators such as
-@YAZESim, usually implement this interrupt mechanism as described. On the other
-hand, ISAs that give the manufacturer flexibility to implement its features as
-they want, like the RISC-V ISA, varie more. @SpikeRISCV, one the reference
-RISC-V simulator, has support for the Core Local Interrupt (CLINT) controller
-@CLINT, which implements the registers described in @subsec:interrupt-handling
-as memory-mapped registers, providing support for both interrupts and timers.
-Other simulators, like @VenusRISCV, support the Zicsr extension and include
-those registers, but don't support interrupts, while simulators like
-@HaoziwanSim don't even support that extension.
+@YAZESim just implement interrupts as described. On the other hand, ISAs that
+give the manufacturer flexibility to implement its features, like the RISC-V
+ISA, varie more. While @SailRISCV #footnote[Technically, it's a formal
+  specification of the architecture, written in SAIL @SAIL, but it can generate
+  an emulator.] implements the registers described in
+@subsec:interrupt-handling, @SpikeRISCV, one the reference RISC-V simulators,
+supports Core Local Interrupt (CLINT) controller @CLINT, and implements them as
+as memory-mapped registers. Other simulators, like @VenusRISCV, support the
+Zicsr extension and include those registers, but don't support interrupts, while
+simulators like @HaoziwanSim don't even support that extension.
 
-// generic simulators
-@SAIL
-@SailRISCV
-// implementa la ISA
-
+// educational simulators
 @Cano2025SAILATOR
 // usa interrupciones para el ecall, el cual llama al kernel
 
-// educational simulators
 @SpecySim @RARSSim
 // usa RARS
 // RARS: The implementation of user-mode exception handlers in RARS is not

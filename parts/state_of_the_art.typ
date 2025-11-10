@@ -145,11 +145,10 @@ and S-level for operating systems @RISCVPrivileged[chap. 1.2] @Bulić2024[chap.
 
 #let csr-figure(csr) = [
   #figure(
-    // scale-to-container(
-    box(
-      width: 75%,
-      include "/diagrams/rv32/" + csr + ".typ",
-    ),
+    {
+      import "/diagrams/rv32/" + csr + ".typ": diagram
+      diagram(width: 75%)
+    },
     caption: [#raw(csr) register],
     placement: auto,
   ) #label("fig:" + csr)

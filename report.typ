@@ -72,6 +72,9 @@
   it
 }
 
+// set figure placement to `auto` by default
+#set figure(placement: auto)
+
 // "booktab" table style
 #show table: block.with(stroke: (y: 0.7pt))
 #set table(column-gutter: .2em, stroke: none)

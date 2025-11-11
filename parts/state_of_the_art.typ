@@ -121,7 +121,7 @@ return from an interrupt with this functionality.
 #figure(
   scale-to-container(include "/diagrams/vectored-interrupts.typ", width: 70%),
   caption: [Vectored interrupts],
-  // placement: auto,
+  placement: none,
 ) <fig:vectored-interrupts>
 
 
@@ -150,7 +150,6 @@ and S-level for operating systems @RISCVPrivileged[chap. 1.2] @Bulić2024[chap.
       diagram(width: 75%)
     },
     caption: [#raw(csr) register],
-    placement: auto,
   ) #label("fig:" + csr)
 ]
 
@@ -208,7 +207,6 @@ handled @RISCVUnprivileged[chap. 3.1] @Bulić2024[chap. 2.5.2].
     [1], [11], [Machine external interrupt],
   ),
   caption: [List of relevant `mcause` register values],
-  placement: auto,
 ) <tab:rv32-excodes>
 
 
@@ -256,10 +254,17 @@ are supplied by the interrupting device @ZilogZ80[pp. 19--20].
 
 
 == Interrupt Simulation
-// TODO: blah blah assembly simulators
+// assembly simulators
+An _assembly simulator_ is a piece of software that emulates a specific
+Instruction Set Architecture (ISA) CPU and allows the user to program it through
+its assembly language. Its purpose is usually educational, in order to aid the
+user in learning the lenguage; or as a development tool, a quick way to iterate
+through different hardware designs without the cost of physically manufacturing
+components.
 
 // specific simulators
-In ISAs that have well-defined simple interrupt mechanisms, simulators such as
+Most of the assembly simulators that exist are tailored to one specific ISA. In
+ISAs that have well-defined simple interrupt mechanisms, simulators such as
 @YAZESim just implement interrupts as described. On the other hand, ISAs that
 give the manufacturer flexibility to implement its features, like the RISC-V
 ISA, varie more. While @SailRISCV #footnote[Technically, it's a formal
@@ -267,27 +272,39 @@ ISA, varie more. While @SailRISCV #footnote[Technically, it's a formal
   an emulator.] implements the registers described in
 @subsec:interrupt-handling, @SpikeRISCV, one the reference RISC-V simulators,
 supports Core Local Interrupt (CLINT) controller @CLINT, and implements them as
-as memory-mapped registers. Other simulators, like @VenusRISCV, support the
-Zicsr extension and include those registers, but don't support interrupts, while
+memory-mapped registers. Other simulators, like @VenusRISCV, support the Zicsr
+extension and include those registers, but don't support interrupts, while
 simulators like @HaoziwanSim don't even support that extension.
 
-// educational simulators
-@Cano2025SAILATOR
-// usa interrupciones para el ecall, el cual llama al kernel
-
-@SpecySim @RARSSim
-// usa RARS
-// RARS: The implementation of user-mode exception handlers in RARS is not
-// complete and does not fully conform to the RISC-V privilidged specification
-
-@wepsim2016a
-@wepsimHandbook
+// generic simulators
+#figure(
+  image("/img/asm-editor.specy.png", width: 75%),
+  caption: [Asm Editor @SpecySim],
+)
+There are also simulators that support multiple ISAs, called _generic
+simulators_, although there are many approaches. @SpecySim is a multi-ISA
+simulator that uses other simulators as a base; specifically for RISC-V, it uses
+@RARSSim. It doesn't implement M-mode, only U-mode, and, according to its
+manual, #quote[The implementation of user-mode exception handlers in RARS is not
+  complete and does not fully conform to the RISC-V privilidged specification,
+  but it is based upon that [...]]. The simulator checks the `utvec` CSR
+#footnote[The equivalent of `mtvec` for U-mode.] is set, and if not, the trap is
+handled by the simulator itself, either by printing an error or performing some
+action in the case of OS calls (such as `ecall`).
 
 
 CREATOR @Camarmas2024CREATOR version 3.3 included some initial support for
 interrupts, specifically in the MIPS architecture.
 
-// TODO: plot simulators along specific/educational axis
+// truly generic simulators
+@wepsim2016a
+@wepsimHandbook
+
+// example of interrupt usage:
+@Cano2025SAILATOR
+// usa interrupciones para el ecall, el cual llama al kernel
+
+
 
 
 == Timers

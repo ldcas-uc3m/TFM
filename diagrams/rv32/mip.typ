@@ -15,6 +15,6 @@
   top-16: true,
 )
 
-#diagram
+#diagram()
 
 

@@ -1,3 +1,6 @@
 [submodule "uc3m-thesis-ieee-typst"]
 	path = uc3m-thesis-ieee-typst
 	url = git@github.com:guluc3m/uc3m-thesis-ieee-typst.git
+[submodule "diagrams/rivet-typst"]
+	path = diagrams/rv32/rivet-typst
+	url = https://git.kb28.ch/rajayonin/rivet-typst.git

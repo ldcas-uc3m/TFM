@@ -26,5 +26,5 @@
   )
 }
 
-#diagram
+#diagram()
 

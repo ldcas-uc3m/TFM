@@ -11,5 +11,5 @@
   custom-config: (bit-width: 15),
 )
 
-#diagram
+#diagram()
 

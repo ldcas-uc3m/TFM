@@ -1,6 +1,8 @@
 // LTeX: enabled=false
 
-#import "@preview/rivet:0.3.0": config, schema
+// TODO: use the official version when updated w/ my patches
+// #import "@preview/rivet:0.3.0": config, schema
+#import "rivet-typst/src/lib.typ": config, schema
 
 #let rv32-config = (
   default-font-family: "CaskaydiaCove NFM",

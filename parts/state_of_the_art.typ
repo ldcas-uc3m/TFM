@@ -265,16 +265,19 @@ components.
 // specific simulators
 Most of the assembly simulators that exist are tailored to one specific ISA. In
 ISAs that have well-defined simple interrupt mechanisms, simulators such as
-@YAZESim just implement interrupts as described. On the other hand, ISAs that
-give the manufacturer flexibility to implement its features, like the RISC-V
-ISA, varie more. While @SailRISCV #footnote[Technically, it's a formal
-  specification of the architecture, written in SAIL @SAIL, but it can generate
-  an emulator.] implements the registers described in
-@subsec:interrupt-handling, @SpikeRISCV, one the reference RISC-V simulators,
-supports Core Local Interrupt (CLINT) controller @CLINT, and implements them as
-memory-mapped registers. Other simulators, like @VenusRISCV, support the Zicsr
-extension and include those registers, but don't support interrupts, while
-simulators like @HaoziwanSim don't even support that extension.
+YAZE-AG @YAZESim just implement interrupts as described. On the other hand, ISAs
+that give the manufacturer flexibility to implement its features, like the
+RISC-V ISA, varie more. While SAILATOR @Cano2025SAILATOR, based on SAIL's RISC-V
+ISA definition @SailRISCV
+#footnote[SAIL @SAIL is a definition language for ISAs, that also can generate a
+  simulator from the definition.]
+implements the registers described in @subsec:interrupt-handling and bundles its
+own kernel to handle traps, Spike @SpikeRISCV, one the reference RISC-V
+simulators, supports Core Local Interrupt (CLINT) controller @CLINT, and
+implements the relevant CSRs as memory-mapped registers. Other simulators, like
+Venus @VenusRISCV, support the Zicsr extension and include those registers, but
+don't support interrupts, while simulators like @HaoziwanSim don't even support
+that extension.
 
 // generic simulators
 #figure(
@@ -282,27 +285,23 @@ simulators like @HaoziwanSim don't even support that extension.
   caption: [Asm Editor @SpecySim],
 )
 There are also simulators that support multiple ISAs, called _generic
-simulators_, although there are many approaches. @SpecySim is a multi-ISA
-simulator that uses other simulators as a base; specifically for RISC-V, it uses
-@RARSSim. It doesn't implement M-mode, only U-mode, and, according to its
-manual, #quote[The implementation of user-mode exception handlers in RARS is not
-  complete and does not fully conform to the RISC-V privilidged specification,
-  but it is based upon that [...]]. The simulator checks the `utvec` CSR
-#footnote[The equivalent of `mtvec` for U-mode.] is set, and if not, the trap is
-handled by the simulator itself, either by printing an error or performing some
-action in the case of OS calls (such as `ecall`).
-
-
-CREATOR @Camarmas2024CREATOR version 3.3 included some initial support for
-interrupts, specifically in the MIPS architecture.
+simulators_, although there are many approaches. Asm Editor @SpecySim is a
+multi-ISA simulator that uses other simulators as a base; specifically for
+RISC-V, it uses RARS @RARSSim. It doesn't implement M-mode, only U-mode, and,
+according to its manual, #quote[The implementation of user-mode exception
+  handlers in RARS is not complete and does not fully conform to the RISC-V
+  privilidged specification, but it is based upon that [...]]. The simulator
+checks the `utvec` #footnote[The equivalent of `mtvec` for U-mode.] CSR is set,
+and if not, the trap is handled by the simulator itself, either by printing an
+error or performing some action in the case of OS calls (such as `ecall`).
+Another approarch is to build a generic simulator that either allows the
+definition of the ISA, as is the case of CREATOR @Camarmas2024CREATOR, or
+simulates a generic processor that allows for the definition of the microcode,
+such as WepSim @wepsim2016a. CREATOR version 3.3 included some initial support
+for interrupts, specifically in the MIPS architecture.
 
 // truly generic simulators
-@wepsim2016a
-@wepsimHandbook
-
-// example of interrupt usage:
-@Cano2025SAILATOR
-// usa interrupciones para el ecall, el cual llama al kernel
+// @wepsimHandbook
 
 
 

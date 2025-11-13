@@ -36,7 +36,12 @@
     figures: true,
     tables: true,
     listings: false,
-    // custom: []
+    custom: (
+      outline(
+        title: [List of algorithms],
+        target: figure.where(kind: "algorithm"),
+      ),
+    ),
   ),
   // appendixes: [],
   // glossary: glossary-entries,
@@ -82,6 +87,9 @@
 
 // code font
 #show raw: set text(font: "CaskaydiaCove NFM")
+
+// don't show captions on algorithm figures, as we're already including it inside
+#show figure.caption.where(kind: "algorithm"): {}
 
 
 /* Thesis */

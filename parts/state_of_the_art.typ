@@ -268,22 +268,20 @@ ISAs that have well-defined simple interrupt mechanisms, simulators such as
 YAZE-AG @YAZESim just implement interrupts as described. On the other hand, ISAs
 that give the manufacturer flexibility to implement its features, like the
 RISC-V ISA, varie more. While SAILATOR @Cano2025SAILATOR, based on SAIL's RISC-V
-ISA definition @SailRISCV
-#footnote[SAIL @SAIL is a definition language for ISAs, that also can generate a
-  simulator from the definition.]
-implements the registers described in @subsec:interrupt-handling and bundles its
-own kernel to handle traps, Spike @SpikeRISCV, one the reference RISC-V
-simulators, supports Core Local Interrupt (CLINT) controller @CLINT, and
-implements the relevant CSRs as memory-mapped registers. Other simulators, like
-Venus @VenusRISCV, support the Zicsr extension and include those registers, but
-don't support interrupts, while simulators like @HaoziwanSim don't even support
-that extension.
+ISA definition @SailRISCV#footnote[SAIL @SAIL is a definition language for ISAs,
+  that also can generate a simulator from the definition.] implements the
+registers described in @subsec:interrupt-handling and bundles its own kernel to
+handle traps, Spike @SpikeRISCV, one the reference RISC-V simulators, supports
+Core Local Interrupt (CLINT) controller @CLINT, and implements the relevant CSRs
+as memory-mapped registers. Other simulators, like Venus @VenusRISCV, support
+the Zicsr extension and include those registers, but don't support interrupts,
+while simulators like @HaoziwanSim don't even support that extension.
 
 // generic simulators
-#figure(
-  image("/img/asm-editor.specy.png", width: 75%),
-  caption: [Asm Editor @SpecySim],
-)
+// #figure(
+//   image("/img/asm-editor.specy.png", width: 75%),
+//   caption: [Asm Editor @SpecySim],
+// )
 There are also simulators that support multiple ISAs, called _generic
 simulators_, although there are many approaches. Asm Editor @SpecySim is a
 multi-ISA simulator that uses other simulators as a base; specifically for
@@ -291,17 +289,38 @@ RISC-V, it uses RARS @RARSSim. It doesn't implement M-mode, only U-mode, and,
 according to its manual, #quote[The implementation of user-mode exception
   handlers in RARS is not complete and does not fully conform to the RISC-V
   privilidged specification, but it is based upon that [...]]. The simulator
-checks the `utvec` #footnote[The equivalent of `mtvec` for U-mode.] CSR is set,
+checks the `utvec`#footnote[The equivalent of `mtvec` for U-mode.] CSR is set,
 and if not, the trap is handled by the simulator itself, either by printing an
 error or performing some action in the case of OS calls (such as `ecall`).
 Another approarch is to build a generic simulator that either allows the
 definition of the ISA, as is the case of CREATOR @Camarmas2024CREATOR, or
 simulates a generic processor that allows for the definition of the microcode,
-such as WepSim @wepsim2016a. CREATOR version 3.3 included some initial support
-for interrupts, specifically in the MIPS architecture.
+such as WepSIM @wepsim2016a. CREATOR version 3.3 included some initial support
+for polled interrupts. It allows putting special tags in registers in the ISA
+definition: an _interrupt cause_ (`CAUSE`) register, which signals that an
+interrupt ocurred when its value is different from `0x0`, and an _exception
+program counter_ (`EPC`), which stores the address of the interrupted
+instruction (_program counter_, `PC`). As shown in @alg:CREATOR-execution-cycle,
+in CREATOR's instruction execution cycle, interrupts are checked before fetching
+the instruction.
 
-// truly generic simulators
 // @wepsimHandbook
+
+#algorithm(
+  title: [CREATOR's instruction execution cycle],
+  id: "CREATOR-execution-cycle",
+)[
+  + *if* $#raw("CAUSE") != 0$ *then* #alg-comment[Interrupt checking]
+    + $#raw("EPC") <- #raw("PC")$
+    + $#raw("PC") <- 0$
+    + $#raw("CAUSE") <- 0$
+  + *end*
+  + Fetch _instruction_
+  + Decode _instruction_
+  + Increment `PC`
+  + Execute _instruction_
+]
+
 
 
 

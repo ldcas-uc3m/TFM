@@ -253,7 +253,7 @@ are supplied by the interrupting device @ZilogZ80[pp. 19--20].
 
 
 
-== Interrupt Simulation
+=== Interrupt Simulation
 // assembly simulators
 An _assembly simulator_ is a piece of software that emulates a specific
 Instruction Set Architecture (ISA) CPU and allows the user to program it through
@@ -268,8 +268,8 @@ ISAs that have well-defined simple interrupt mechanisms, simulators such as
 YAZE-AG @YAZESim just implement interrupts as described. On the other hand, ISAs
 that give the manufacturer flexibility to implement its features, like the
 RISC-V ISA, varie more. While SAILATOR @Cano2025SAILATOR, based on SAIL's RISC-V
-ISA definition @SailRISCV#footnote[SAIL @SAIL is a definition language for ISAs,
-  that also can generate a simulator from the definition.] implements the
+ISA definition#footnote[SAIL @SAIL is a definition language for ISAs, that also
+  can generate a simulator from the definition.] @SailRISCV implements the
 registers described in @subsec:interrupt-handling and bundles its own kernel to
 handle traps, Spike @SpikeRISCV, one the reference RISC-V simulators, supports
 Core Local Interrupt (CLINT) controller @CLINT, and implements the relevant CSRs
@@ -295,32 +295,56 @@ error or performing some action in the case of OS calls (such as `ecall`).
 Another approarch is to build a generic simulator that either allows the
 definition of the ISA, as is the case of CREATOR @Camarmas2024CREATOR, or
 simulates a generic processor that allows for the definition of the microcode,
-such as WepSIM @wepsim2016a. CREATOR version 3.3 included some initial support
-for polled interrupts. It allows putting special tags in registers in the ISA
-definition: an _interrupt cause_ (`CAUSE`) register, which signals that an
-interrupt ocurred when its value is different from `0x0`, and an _exception
-program counter_ (`EPC`), which stores the address of the interrupted
-instruction (_program counter_, `PC`). As shown in @alg:CREATOR-execution-cycle,
-in CREATOR's instruction execution cycle, interrupts are checked before fetching
-the instruction.
+such as WepSIM @wepsim2016a.
 
-// @wepsimHandbook
+
+==== Interrupt simulation in CREATOR
+CREATOR version 3.3 included some initial support for polled interrupts. It
+allows putting special tags in registers in the ISA definition: an _interrupt
+cause_ (`CAUSE`) register, which signals that an interrupt ocurred when its
+value is different from `0x0`, and an _exception program counter_ (`EPC`), which
+stores the address of the interrupted instruction (_program counter_, `PC`). As
+shown in @alg:CREATOR-execution-cycle, in CREATOR's instruction execution cycle,
+interrupts are checked before fetching the instruction, therefore if an
+instruction generates an interrupt, the next instruction is the one to get
+interrupted. These registers were only implemented in the MIPS-32 architecture
+provided in the simulator.
 
 #algorithm(
   title: [CREATOR's instruction execution cycle],
   id: "CREATOR-execution-cycle",
 )[
-  + *if* $#raw("CAUSE") != 0$ *then* #alg-comment[Interrupt checking]
+  + *if* $#raw("CAUSE") != 0$ *then* #alg-comment[Interrupt detection]
     + $#raw("EPC") <- #raw("PC")$
     + $#raw("PC") <- 0$
     + $#raw("CAUSE") <- 0$
-  + *end*
+  - *end*
   + Fetch _instruction_
   + Decode _instruction_
   + Increment `PC`
   + Execute _instruction_
 ]
 
+
+
+==== Interrupt simulation in WEPSIM
+// I habilita interrupciones
+
+// unidad control recibe INT de IO a través de bus control
+// INTA
+// INTV (ID) a RT1 a través de data bus
+// microrutina con tabla de vectores
+// en caso de dividir por cero, se deja en RT1, no es INT, es excepción, por lo que salta directamente a rutina
+
+// ecall no genera interrupción, igual que dividir por cero
+
+// microrutina guarda estado en stack (SR, PC)
+
+// sret retorna SR, PC
+
+// no se deshabilita I (pero se debería)
+
+@wepsimHandbook[chap. 2.5.]
 
 
 

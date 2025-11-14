@@ -67,7 +67,8 @@
 /// -> content
 #let alg-comment(body) = {
   h(1fr)
+  set text(size: .9em)
   sym.gt.tri
   [~]
-  smallcaps(body)
+  emph(body)
 }

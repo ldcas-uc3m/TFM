@@ -28,17 +28,22 @@
 
 
 
-#import "@preview/lovelace:0.3.0": pseudocode-list
+#import "@preview/lovelace:0.3.0": line-label, pseudocode-list
 
-/// Creates an algorithm figure, using the `lovelace` package. Its label is `alg:<id>`.
+
+/// Creates an algorithm figure, using the `lovelace` package.
 ///
 /// - body (content): Argument to be passed to `lovelace:pseudocode-list`
 /// - title (content, none): Algorithm title
-/// - id (str, none): Algorithm ID, used for the label
-/// - id (str, none): Algorithm ID, used for the label
+/// - label (label, none): Figure label
 /// - width (auto, fraction, relative): Width of the figure
+/// - placement (auto, none, alignment): Figure placement
 /// -> content
-#let algorithm(body, title: none, id: none, width: 75%) = [
+#let algorithm(body, title: none, label: none, width: 75%, placement: auto) = [
+  // for some reason, setting `placement` to `auto` breaks `line-label` (see
+  // https://github.com/andreasKroepelin/lovelace/issues/28)
+  #set figure(placement: none)
+
   #figure(
     box(
       width: width,
@@ -55,11 +60,17 @@
     caption: title,
     kind: "algorithm",
     supplement: [Algorithm],
+    placement: placement,
   )
-  #if id != none {
-    label("alg:" + id)
+  #if label != none {
+    assert(
+      type(label) == std.label,
+      message: "You must provide a label, e.g. `<alg:stuff>`",
+    )
+    label
   }
 ]
+
 
 /// Creates an inline comment inside `algorithm`.
 ///

@@ -78,11 +78,11 @@ IRQ pin is typically checked before fetching a new instruction.
 Before handling the interrupt, it is necessary to save the execution context, so
 that the program can be resumed when the interrupt handler has completed. The
 execution context varies depending on the architecture, and can include, stack
-pinter, status register, and any other registers that are visible to the CPU,
+pointer, status register, and any other registers that are visible to the CPU,
 but it always includes at least the program counter. This context can be stored
 on special registers, on the stack, or in a combination of both, depending on
-the architecture. The cause of the interrupt is also typically stored for
-architectures that support different types of interrupts.
+the architecture. The cause of the interrupt is also stored in architectures
+that support different types of interrupts.
 
 // Execution/Privilege Mode change
 Modern architectures, such as Intel's x86 @IntelDevManual3A and RISC-V
@@ -304,15 +304,21 @@ allows putting special tags in registers in the ISA definition: an _interrupt
 cause_ (`CAUSE`) register, which signals that an interrupt ocurred when its
 value is different from `0x0`, and an _exception program counter_ (`EPC`), which
 stores the address of the interrupted instruction (_program counter_, `PC`). As
-shown in @alg:CREATOR-execution-cycle, in CREATOR's instruction execution cycle,
-interrupts are checked before fetching the instruction, therefore if an
-instruction generates an interrupt, the next instruction is the one to get
-interrupted. These registers were only implemented in the MIPS-32 architecture
-provided in the simulator.
+shown in @alg:creator-execution-cycle, in CREATOR 5#footnote[As it will be
+  mentioned in @chap:implementation, the process of implementing these new
+  features in the simulator, among other factors, involved an almost complete
+  rewrite of all its systems. The term "CREATOR 5" will be used to refer to the
+  state of the project before these changes (version 5.0), and "CREATOR 6" will
+  be used to refer to the state after the changes (version 6.0).]'s instruction
+execution cycle, interrupts are checked before fetching the instruction,
+therefore if an instruction generates an interrupt, the next instruction is the
+one to get interrupted. These registers were only implemented in the MIPS-32
+architecture provided in the simulator.
+
 
 #algorithm(
-  title: [CREATOR's instruction execution cycle],
-  id: "CREATOR-execution-cycle",
+  title: [CREATOR 5's instruction execution cycle],
+  label: <alg:creator-execution-cycle>,
 )[
   + *if* $#raw("CAUSE") != 0$ *then* #alg-comment[Interrupt detection]
     + $#raw("EPC") <- #raw("PC")$
@@ -327,11 +333,36 @@ provided in the simulator.
 
 
 
-==== Interrupt simulation in WEPSIM
-// I habilita interrupciones
+==== Interrupt simulation in WepSIM
+WepSIM simulates what the authors call the "Elemental Processor"
+(@fig:wepsim-ep), a simple 32-bit processor with a (micro)programmable control
+unit (@fig:wepsim-cu). This allows the user to define not only what signals on
+each instruction sets, but also how the instruction fetch is performed. For the
+purpose of interrupt simulation, the control unit includes, connected to the
+Control Bus, an interrupt request pin (`INT`) and an interrupt acknowledge pin
+(`INTA`). The processor also includes a global interrupt enable _flag_ (`I`),
+and an execution mode _flag_ (`U`), although they are currently unused in the
+simulator.
 
-// unidad control recibe INT de IO a través de bus control
-// INTA
+#figure(
+  image("/img/wepsim-ep-processor.svg", width: 80%),
+  caption: [WepSIM's Elemental Processor @wepsim],
+) <fig:wepsim-ep>
+
+#figure(
+  image("/img/wepsim-controlunit.svg", width: 75%),
+  caption: [WepSIM's Control Unit @wepsim],
+) <fig:wepsim-cu>
+
+As mentioned, the user can customize how the Elemental Processor functions, but
+WepSIM's handbook @wepsimHandbook[chap. 2.5.], as well as some provided
+examples#footnote[Specifically, examples 9--13 in the "MIPS" example set.],
+offer some guidance with regard to _how_ interrupts should be implemented.
+WepSIM distinguishes between three types of interrupts: _exceptions_, errors
+during the execution of an instruction; _system calls_, a special instruction
+that executes a handler in privileged mode; and _interrupts_, caused by an I/O
+device.
+
 // INTV (ID) a RT1 a través de data bus
 // microrutina con tabla de vectores
 // en caso de dividir por cero, se deja en RT1, no es INT, es excepción, por lo que salta directamente a rutina
@@ -340,11 +371,44 @@ provided in the simulator.
 
 // microrutina guarda estado en stack (SR, PC)
 
+#algorithm(
+  title: [WepSIM's instruction execution cycle],
+  label: <alg:wepsim-execution-cycle>,
+)[
+  + Fetch _instruction_ #line-label(<alg:wepsim-execution-cycle:fetch>)
+  + Increment `PC`
+  + *if* $#raw("INT") != 0$ *then* #alg-comment[Interrupt detection]
+    + $#raw("INTA") <- 1$
+    + $#raw("RT1") <- #raw("INTV")$
+    - $#raw("INT") <- 0$ #alg-comment[Caused by I/O device]
+    + $#raw("MEM[SP]") <- #raw("PC")$
+    + Increment `SP`
+    + $#raw("MEM[SP]") <- #raw("SR")$
+    + Increment `SP`
+    + $#raw("PC") <- #raw("MEM[RT1") times 4#raw("]")$
+    + *goto* @alg:wepsim-execution-cycle:fetch
+  - *end*
+  + Decode _instruction_
+  + Execute _instruction_
+]
+
+
 // sret retorna SR, PC
+#algorithm(
+  title: [WepSIM's return from interrupt instruction],
+  label: <alg:wepsim-reti>,
+)[
+  + $#raw("SR") <- #raw("MEM[SP]")$
+  + Increment `SP`
+  + $#raw("PC") <- #raw("MEM[SP]")$
+  + Increment `SP`
+]
+
 
 // no se deshabilita I (pero se debería)
 
-@wepsimHandbook[chap. 2.5.]
+
+// ktext, kdata
 
 
 

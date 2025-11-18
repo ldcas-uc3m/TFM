@@ -140,8 +140,7 @@ return from an interrupt with this functionality.
 
 // vectored interrupts diagram
 #figure(
-  // scale-to-width(include "/diagrams/vectored-interrupts.typ", width: 40%),
-  include "/diagrams/vectored-interrupts.typ",
+  scale-to-container(include "/diagrams/vectored-interrupts.typ", width: 70%),
   caption: [Vectored interrupts],
   // placement: auto,
 ) <fig:vectored-interrupts>

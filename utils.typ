@@ -8,49 +8,21 @@
   (table.header(..children, repeat: repeat), table.hline())
 }
 
-/// Computes the current page's textwidth
+
+/// Scales content to the desired width/height relative to its container.
 ///
-/// - page (function): Typst's `page` function
-/// -> length
-#let textwidth(page) = {
-  // Margins are set automatically to 2.5/21 times the smaller dimension of the
-  // page.
-  let default-margin = (2.5 / 21) * calc.min(page.width, page.height)
-
-  if page.margin == auto {
-    return page.width - (2 * default-margin)
-  }
-
-  if "x" in page.margin {
-    return page.width - (2 * page.margin.x.length)
-  }
-
-  let left-margin = if "left" in page.margin {
-    page.margin.left.length
-  } else if "inside" in page.margin {
-    page.margin.inside.length
-  } else if "rest" in page.margin {
-    page.margin.rest.length
-  } else { default-margin }
-
-  let right-margin = if "right" in page.margin {
-    page.margin.right.length
-  } else if "outside" in page.margin {
-    page.margin.outside.length
-  } else if "rest" in page.margin {
-    page.margin.rest.length
-  } else { default-margin }
-
-  return page.width - left-margin - right-margin
-}
-
-/// Scales content to the desired width.
-///
-/// - body (content):
-/// - width (fraction): desired width
+/// - body (content): The content to scale
+/// - width (ratio, auto): Desired width (relative to its container)
+/// - height (ratio, auto): Desired heigth (relative to its container)
 /// -> content
-#let scale-to-width(body, width: 100%) = context {
-  let body-width = measure(body).width
-  scale(textwidth(page) / body-width * width, reflow: true, body)
-}
+#let scale-to-container(body, width: auto, height: auto) = layout(ly => {
+  let body-size = measure(body)
+
+  scale(
+    x: if width == auto { auto } else { ly.width / body-size.width * width },
+    y: if height == auto { auto } else { ly.height / body-size.height * height },
+    reflow: true,
+    body,
+  )
+})
 

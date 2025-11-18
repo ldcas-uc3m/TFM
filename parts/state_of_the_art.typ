@@ -2,6 +2,7 @@
 
 
 = State of the art
+// TODO: blah blah blah
 
 
 == Interrupts
@@ -252,7 +253,6 @@ the pointer are set by the contents of register `I`, while the lower eight bits
 are supplied by the interrupting device @ZilogZ80[pp. 19--20].
 
 
-
 === Interrupt Simulation
 // assembly simulators
 An _assembly simulator_ is a piece of software that emulates a specific
@@ -278,10 +278,6 @@ the Zicsr extension and include those registers, but don't support interrupts,
 while simulators like @HaoziwanSim don't even support that extension.
 
 // generic simulators
-// #figure(
-//   image("/img/asm-editor.specy.png", width: 75%),
-//   caption: [Asm Editor @SpecySim],
-// )
 There are also simulators that support multiple ISAs, called _generic
 simulators_, although there are many approaches. Asm Editor @SpecySim is a
 multi-ISA simulator that uses other simulators as a base; specifically for
@@ -313,8 +309,7 @@ shown in @alg:creator-execution-cycle, in CREATOR 5#footnote[As it will be
 execution cycle, interrupts are checked before fetching the instruction,
 therefore if an instruction generates an interrupt, the next instruction is the
 one to get interrupted. These registers were only implemented in the MIPS-32
-architecture provided in the simulator.
-
+architecture provided with the simulator.
 
 #algorithm(
   title: [CREATOR 5's instruction execution cycle],
@@ -332,17 +327,16 @@ architecture provided in the simulator.
 ]
 
 
-
 ==== Interrupt simulation in WepSIM
 WepSIM simulates what the authors call the "Elemental Processor"
 (@fig:wepsim-ep), a simple 32-bit processor with a (micro)programmable control
 unit (@fig:wepsim-cu). This allows the user to define not only what signals on
 each instruction sets, but also how the instruction fetch is performed. For the
-purpose of interrupt simulation, the control unit includes, connected to the
-Control Bus, an interrupt request pin (`INT`) and an interrupt acknowledge pin
-(`INTA`). The processor also includes a global interrupt enable _flag_ (`I`),
-and an execution mode _flag_ (`U`), although they are currently unused in the
-simulator.
+purpose of asyncronous interrupt simulation, the control unit includes,
+connected to the Control Bus, an interrupt request pin (`INT`) and an interrupt
+acknowledge pin (`INTA`). The processor also includes a global interrupt enable
+_flag_ (`I`), and an execution mode _flag_ (`U`), although they are currently
+unused in the simulator.
 
 #figure(
   image("/img/wepsim-ep-processor.svg", width: 80%),
@@ -350,7 +344,7 @@ simulator.
 ) <fig:wepsim-ep>
 
 #figure(
-  image("/img/wepsim-controlunit.svg", width: 75%),
+  image("/img/wepsim-controlunit.svg", width: 70%),
   caption: [WepSIM's Control Unit @wepsim],
 ) <fig:wepsim-cu>
 
@@ -360,42 +354,35 @@ examples#footnote[Specifically, examples 9--13 in the "MIPS" example set.],
 offer some guidance with regard to _how_ interrupts should be implemented.
 WepSIM distinguishes between three types of interrupts: _exceptions_, errors
 during the execution of an instruction; _system calls_, a special instruction
-that executes a handler in privileged mode; and _interrupts_, caused by an I/O
-device.
-
-// INTV (ID) a RT1 a través de data bus
-// microrutina con tabla de vectores
-// en caso de dividir por cero, se deja en RT1, no es INT, es excepción, por lo que salta directamente a rutina
-
-// ecall no genera interrupción, igual que dividir por cero
-
-// microrutina guarda estado en stack (SR, PC)
+that executes a handler in privileged mode; and _I/O interrupts_, caused by an
+I/O device. The convention when an interrupt happens (the _interrupt hook_), as
+shown in @alg:wepsim-hook, is to store the program counter (`PC`) and status
+register (`SR`) in the stack (marked by the stack pointer register, `SP`), and
+jump to the interrupt handler. WepSIM implements vectored interrupts where,
+similarly to the mechanism described in @fig:vectored-interrupts, register `RT1`
+holds the interrupt type#footnote[By convention, values `0x00` to `0x08` are
+  reserved for exceptions and system calls, while values `0x09` to `0xFF` are
+  reserved for I/O devices.], and the interrupt vector table's base address is
+always `0x0`. This value is then multiplied by $4$ to obtain the handler address
+from memory, and then it stores it in `PC`. The vector table must be explicitly
+set by the user in the "kernel data" memory segment, through the use of the
+`.kdata` assembly directive. At the end of the interrupt handler, the _return
+from interrupt_ (`reti`) instruction must be executed in order to restore the
+`PC` and `SR`, as shown in @alg:wepsim-reti.
 
 #algorithm(
-  title: [WepSIM's instruction execution cycle],
-  label: <alg:wepsim-execution-cycle>,
+  title: [WepSIM's interrupt hook],
+  label: <alg:wepsim-hook>,
 )[
-  + Fetch _instruction_ #line-label(<alg:wepsim-execution-cycle:fetch>)
-  + Increment `PC`
-  + *if* $#raw("INT") != 0$ *then* #alg-comment[Interrupt detection]
-    + $#raw("INTA") <- 1$
-    + $#raw("RT1") <- #raw("INTV")$
-    - $#raw("INT") <- 0$ #alg-comment[Caused by I/O device]
-    + $#raw("MEM[SP]") <- #raw("PC")$
-    + Increment `SP`
-    + $#raw("MEM[SP]") <- #raw("SR")$
-    + Increment `SP`
-    + $#raw("PC") <- #raw("MEM[RT1") times 4#raw("]")$
-    + *goto* @alg:wepsim-execution-cycle:fetch
-  - *end*
-  + Decode _instruction_
-  + Execute _instruction_
+  + $#raw("MEM[SP]") <- #raw("PC")$
+  + Increment `SP`
+  + $#raw("MEM[SP]") <- #raw("SR")$
+  + Increment `SP`
+  + $#raw("PC") <- #raw("MEM[RT1") times 4#raw("]")$
 ]
 
-
-// sret retorna SR, PC
 #algorithm(
-  title: [WepSIM's return from interrupt instruction],
+  title: [WepSIM's return from interrupt],
   label: <alg:wepsim-reti>,
 )[
   + $#raw("SR") <- #raw("MEM[SP]")$
@@ -404,16 +391,40 @@ device.
   + Increment `SP`
 ]
 
+Both exceptions and system calls are implemented as syncronous interrupts; the
+`INT` signal is not activated, and the instruction is responsible for storing
+the correct interrupt type in `RT1` and performing the interrupt hook. On I/O
+interrupts, in the instruction execution cycle (shown in
+@alg:wepsim-execution-cycle), before performing the fetch, the Control Unit
+checks the `INT` signal. If it's active, the Control Unit acknowledges it by
+activating `INTA`, stores the interrupt type (`INTV`) provided by the I/O device
+in `RT1`, and performs the interrupt hook (@alg:wepsim-hook). Upon receiving the
+`INTA` signal, the I/O device clears the `INT` signal.
 
-// no se deshabilita I (pero se debería)
-
-
-// ktext, kdata
-
+#algorithm(
+  title: [WepSIM's instruction execution cycle],
+  label: <alg:wepsim-execution-cycle>,
+)[
+  + *if* $#raw("INT") != 0$ *then* #alg-comment[Interrupt detection]
+    + $#raw("INTA") <- 1$
+    + $#raw("RT1") <- #raw("INTV")$
+    - $#raw("INT") <- 0$ #alg-comment[Caused by I/O device]
+    + Interrupt hook (@alg:wepsim-hook)
+  - *end*
+  + Fetch _instruction_
+  + Increment `PC`
+  + Decode _instruction_
+  + Execute _instruction_
+]
 
 
 
 == Timers
+
+
+==== Timer simulation in WepSIM
+
+
 
 
 == Memory-mapped I/O

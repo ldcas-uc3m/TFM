@@ -9,7 +9,7 @@
     ranges: (
       "3": (name: "MSIP"),
       "7": (name: "MTIP"),
-      "12-11": (name: "MEIP"),
+      "11": (name: "MEIP"),
     ),
   ),
   top-16: true,

@@ -30,7 +30,7 @@
     // https://www.ieee.org/content/dam/ieee-org/ieee/web/org/pubs/ieee-taxonomy.pdf
     keywords: ("Computer science education", "Digital simulation"),
   ),
-  acknowledgements: [Mi churri.],
+  acknowledgements: [#strike[Mi cuchipurruchi.] Nadie. Estoy jodidamente solo.],
   outlines: (
     // contents is compulsory
     figures: true,

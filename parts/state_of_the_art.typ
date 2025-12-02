@@ -233,7 +233,7 @@ provide some other mechanism for clearing the pending interrupt
 // detection
 As discussed in @subsec:interrupt-taxonomy, the Z80 CPU contains two types on
 interrupts, _maskable_, which can be enabled or disabled by the programmer, and
-_nonmaskable_, which can't be disabled. For this purpose, the CPU contain two
+_nonmaskable_, which can't be disabled. For this purpose, the CPU contains two
 interrupt input pins: `INT`, for maskable, and `NMI`, for unmaskable. To enable
 interrupts, there is a flip-flop (`IFF`) that can be either set or reset by the
 user using specialized instructions#footnote[`EI`, _Enable Interrupt_, and `DI`,
@@ -241,8 +241,8 @@ user using specialized instructions#footnote[`EI`, _Enable Interrupt_, and `DI`,
 is split into two, `IFF1` and `IFF2`. When a nonmaskable interrupt occurs (pin
 `NMI` is asserted), the status of `IFF1` is stored in `IFF2`, and `IFF1` is
 reset to prevent maskable interrupts from interrupting the handler. When a
-maskable interrupt occurs (pin `INT` is asserted) and is accepted, it disables
-interrupts by clearing both `IFF1` and `IFF2` @ZilogZ80[pp. 17--18].
+maskable interrupt occurs (pin `INT` is asserted) and is accepted, interrupts
+are disabled by clearing both `IFF1` and `IFF2` @ZilogZ80[pp. 17--18].
 
 // handling
 While nonmaskable interrupts are always handled by restarting the CPU at address
@@ -321,21 +321,24 @@ such as WepSIM @wepsim2016a.
 
 
 ==== Interrupt simulation in CREATOR
-CREATOR version 3.3 included some initial support for polled interrupts. It
-allows putting special tags in registers in the ISA definition: an _interrupt
-cause_ (`CAUSE`) register, which signals that an interrupt ocurred when its
-value is different from `0x0`, and an _exception program counter_ (`EPC`), which
-stores the address of the interrupted instruction (_program counter_, `PC`). As
-shown in @alg:creator-execution-cycle, in CREATOR 5#footnote[As it will be
-  mentioned in @chap:implementation, the process of implementing these new
-  features in the simulator, among other factors, involved an almost complete
-  rewrite of all its systems. The term "CREATOR 5" will be used to refer to the
-  state of the project before these changes (version 5.0), and "CREATOR 6" will
-  be used to refer to the state after the changes (version 6.0).]'s instruction
-execution cycle, interrupts are checked before fetching the instruction,
-therefore if an instruction generates an interrupt, the next instruction is the
-one to get interrupted. These registers were only implemented in the MIPS-32
-architecture provided with the simulator.
+CREATOR (_didaCtic and geneRic assEmbly progrAmming simulaTOR_) is an
+educational integrated development environment for assembly programming,
+developed by the ARCOS group at UC3M. CREATOR version 3.3 included some initial
+support for polled interrupts. It allows putting special tags in registers in
+the ISA definition: an _interrupt cause_ (`CAUSE`) register, which signals that
+an interrupt ocurred when its value is different from `0x0`, and an _exception
+program counter_ (`EPC`), which stores the address of the interrupted
+instruction (_program counter_, `PC`). As shown in @alg:creator-execution-cycle,
+in CREATOR 5#footnote[As it will be mentioned in @chap:implementation, the
+  process of implementing these new features in the simulator, among other
+  factors, involved an almost complete rewrite of all its systems. The term
+  "CREATOR 5" will be used to refer to the state of the project before these
+  changes (version 5.0), and "CREATOR 6" will be used to refer to the state
+  after the changes (version 6.0).]'s instruction execution cycle, interrupts
+are checked before fetching the instruction, therefore if an instruction
+generates an interrupt, the next instruction is the one to get interrupted.
+These registers were only implemented in the MIPS-32 architecture provided with
+the simulator.
 
 #algorithm(
   title: [CREATOR 5's instruction execution cycle],
@@ -354,10 +357,11 @@ architecture provided with the simulator.
 
 
 ==== Interrupt simulation in WepSIM
-WepSIM simulates what the authors call the "Elemental Processor"
-(@fig:wepsim-ep), a simple 32-bit processor with a (micro)programmable control
-unit (@fig:wepsim-cu). This allows the user to define not only what signals on
-each instruction sets, but also how the instruction fetch is performed. For the
+WepSIM (the _Web Elemental Processor SIMulator_) is an educational CPU simulator
+that emulates what the authors call the "Elemental Processor" (@fig:wepsim-ep),
+a simple 32-bit processor with a (micro)programmable control unit
+(@fig:wepsim-cu). This allows the user to define not only what signals on each
+instruction sets, but also how the instruction fetch is performed. For the
 purpose of asyncronous interrupt simulation, the control unit includes,
 connected to the Control Bus, an interrupt request pin (`INT`) and an interrupt
 acknowledge pin (`INTA`). The processor also includes a global interrupt enable

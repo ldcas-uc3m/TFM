@@ -10,5 +10,5 @@
 
 
 
-== Document Structure
+== Document structure
 

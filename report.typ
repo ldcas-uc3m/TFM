@@ -7,7 +7,7 @@
 #show: conf.with(
   degree: "Máster Universitario en Ingeniería Informática",
   title: "Implementing Interrupts, Timers, and Memory-Mapped I/O in CREATOR",
-  // short-title: "",
+  // short-title: "Implementing Interrupts, Timers, and MMIO in CREATOR",
   author: "Luis Daniel Casais Mezquida",
   advisors: ("Alejandro Calderón Mateos",),
   location: "Leganés, Madrid",

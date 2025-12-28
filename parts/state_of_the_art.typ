@@ -119,16 +119,18 @@ therefore there must be a mechanism to execute the correct one for each type.
 There are two approaches to this problem: _polled interrupts_ and _vectored
 interrupts_. In the former, the CPU branches to a specific handler address that
 typically evaluates the type of interrupt and branches to the handler for the
-specific type. The latter, as shown in @fig:vectored-interrupts, implements an
-_interrupt vector table_, a table containing _interrupt vectors_, addresses of
-interrupt handlers, typically managed by the operating system. The CPU jumps to
-each entry specified in the _interrupt register_. This register is typically
-divided into the base address of the interrupt vector table and the interrupt
-type, or interrupt exception code, allowing users to specify the address of the
-table. Once the handler has finished, usually signaled by some kind of special
-"return from interrupt" instruction, the CPU must restore the previous execution
-context and privilege mode. Most architectures include a special instruction to
-return from an interrupt with this functionality.
+specific type. The latter---as shown in #ref(
+  <fig:vectored-interrupts>,
+)---implements an _interrupt vector table_, a table containing _interrupt
+vectors_, addresses of interrupt handlers, typically managed by the operating
+system. The CPU jumps to each entry specified in the _interrupt register_. This
+register is typically divided into the base address of the interrupt vector
+table and the interrupt type, or interrupt exception code, allowing users to
+specify the address of the table. Once the handler has finished, usually
+signaled by some kind of special "return from interrupt" instruction, the CPU
+must restore the previous execution context and privilege mode. Most
+architectures include a special instruction to return from an interrupt with
+this functionality.
 
 // vectored interrupts diagram
 #figure(
@@ -159,38 +161,39 @@ and S-level for operating systems @RISCVPrivileged[chap. 1.2] @Bulić2024[chap.
 #csr-figure("mie")
 #csr-figure("mip")
 
-RISC-V handles exceptions and interrupts, as stated in
-@subsec:interrupt-taxonomy, by generating traps. As a trap involves elevating
-the privilege level, e.g. requesting an OS system call from a user program, both
-M and S privilege levels include a set of CSRs for handling them#footnote[As
-  they are virtually the same, only the M-level set will be described.]. The
-`mstatus` (_Machine Status_) register (@fig:mstatus) keeps track of and controls
-the CPU's current operating state. In this register, there are several
-interrupt-related fields: field `MIE` (_Machine Interrupt Enable_) controls
-whether interrupts are globally enabled or disabled for that privilege mode,
-field `MPP` (_Machine Previous Privilege Mode_) holds the previous privilege
-mode, and, to allow nesting of interrupts, field `MPIE` stores the previous
-value of `MIE` when an interrupt occurs. The `mie` (_Machine Interrupt Enable_)
-register (@fig:mie) allows for a finer control of interrupts, allowing the
-programmer to set which types of interrupts are enabled: field `MSIE` (_Machine
-Software Interrupt Enable_), `MTIE` (_Machine Timer Interrupt Enable_), and
-`MEIE` (_Machine External Interrupt Enable_) control software, timer, and
-external interrupts, respectively. The `mip` (_Machine Interrupt Pending_)
-register (@fig:mip) indicates the interrrupts that are currently pending.
-Similarly to register `mie`, it specifies the type of interrupt on specific
-fields: `MSIP` (_Machine Software Interrupt Pending_), `MTIP` (_Machine Timer
-Interrupt Pending_), and `MEIP` (_Machine External Interrupt Pending_). Each of
-these fields may be writable or may be read-only. Register `mcause` (_Machine
-Cause_, @fig:mcause) provides information about the event that caused the trap.
-This register contains a field `I` specifying if the cause was an interrupt or
-an exception, while the rest of the bits are reserved for the exception code.
-RISC-V defines some of these exception codes (see @tab:rv32-excodes), while
-others are left for the implementation to use. Register `mtvec` (_Machine
-Trap-Vector Base-Address_, @fig:mtvec) holds the trap vector configuration.
-Depending on the value of the `MODE` field, RISC-V allows for polled interrupts
-(_direct mode_, with a value of `0`) or vectored interrupts (_vectored mode_,
-with a value of `1`). In direct mode, all traps cause the PC to be set to the
-address in the `BASE` field, while on vectored mode, traps set the PC to address
+RISC-V handles exceptions and interrupts---as stated in #ref(
+  <subsec:interrupt-taxonomy>,
+)---by generating traps. As a trap involves elevating the privilege level, e.g.
+requesting an OS system call from a user program, both M and S privilege levels
+include a set of CSRs for handling them#footnote[As they are virtually the same,
+  only the M-level set will be described.]. The `mstatus` (_Machine Status_)
+register (@fig:mstatus) keeps track of and controls the CPU's current operating
+state. In this register, there are several interrupt-related fields: field `MIE`
+(_Machine Interrupt Enable_) controls whether interrupts are globally enabled or
+disabled for that privilege mode, field `MPP` (_Machine Previous Privilege
+Mode_) holds the previous privilege mode, and, to allow nesting of interrupts,
+field `MPIE` stores the previous value of `MIE` when an interrupt occurs. The
+`mie` (_Machine Interrupt Enable_) register (@fig:mie) allows for a finer
+control of interrupts, allowing the programmer to set which types of interrupts
+are enabled: field `MSIE` (_Machine Software Interrupt Enable_), `MTIE`
+(_Machine Timer Interrupt Enable_), and `MEIE` (_Machine External Interrupt
+Enable_) control software, timer, and external interrupts, respectively. The
+`mip` (_Machine Interrupt Pending_) register (@fig:mip) indicates the
+interrrupts that are currently pending. Similarly to register `mie`, it
+specifies the type of interrupt on specific fields: `MSIP` (_Machine Software
+Interrupt Pending_), `MTIP` (_Machine Timer Interrupt Pending_), and `MEIP`
+(_Machine External Interrupt Pending_). Each of these fields may be writable or
+may be read-only. Register `mcause` (_Machine Cause_, @fig:mcause) provides
+information about the event that caused the trap. This register contains a field
+`I` specifying if the cause was an interrupt or an exception, while the rest of
+the bits are reserved for the exception code. RISC-V defines some of these
+exception codes (see @tab:rv32-excodes), while others are left for the
+implementation to use. Register `mtvec` (_Machine Trap-Vector Base-Address_,
+@fig:mtvec) holds the trap vector configuration. Depending on the value of the
+`MODE` field, RISC-V allows for polled interrupts (_direct mode_, with a value
+of `0`) or vectored interrupts (_vectored mode_, with a value of `1`). In direct
+mode, all traps cause the PC to be set to the address in the `BASE` field, while
+on vectored mode, traps set the PC to address
 $mono("BASE") + 4 times italic("cause")$, _cause_ being the exception code found
 in `mcause`. Finally, register `mepc` (_Machine Exception Program Counter_)
 holds the address of the instruction that generated the exception while it is
@@ -261,7 +264,7 @@ the handler routine, so the execution can be resumed @ZilogZ80[pp. 19--20, 59].
 After the handler finishes, the interrupt pin must be reset#footnote[In the case
   that the interrupt was generated by a peripheral device, the device must be
   notified through the use of an `OUT` instruction, as it will be shown in
-  @sec:mmio-impl.] before re-enabling interrupts, and returning from the
+  @sec:devices-impl.] before re-enabling interrupts, and returning from the
 routine. A `RET` instruction#footnote[The `RET` instruction pops the top of the
   stack and stores it into the PC.] may be used to resume execution, but the Z80
 ISA offers some alternatives with additional functionality for handling
@@ -386,20 +389,20 @@ offer some guidance with regard to _how_ interrupts should be implemented.
 WepSIM distinguishes between three types of interrupts: _exceptions_, errors
 during the execution of an instruction; _system calls_, a special instruction
 that executes a handler in privileged mode; and _I/O interrupts_, caused by an
-I/O device. The convention when an interrupt happens (the _interrupt hook_), as
-shown in @alg:wepsim-hook, is to store the program counter (`PC`) and status
-register (`SR`) in the stack (marked by the stack pointer register, `SP`), and
-jump to the interrupt handler. WepSIM implements vectored interrupts where,
-similarly to the mechanism described in @fig:vectored-interrupts, register `RT1`
-holds the interrupt type#footnote[By convention, values `0x00` to `0x08` are
-  reserved for exceptions and system calls, while values `0x09` to `0xFF` are
-  reserved for I/O devices.], and the interrupt vector table's base address is
-always `0x0`. This value is then multiplied by $4$ to obtain the handler address
-from memory, and then it stores it in `PC`. The vector table must be explicitly
-set by the user in the "kernel data" memory segment, through the use of the
-`.kdata` assembly directive. At the end of the interrupt handler, the _return
-from interrupt_ (`reti`) instruction must be executed in order to restore the
-`PC` and `SR`, as shown in @alg:wepsim-reti.
+I/O device. The convention when an interrupt happens (the _interrupt hook_)---as
+shown in #ref(<alg:wepsim-hook>)---is to store the program counter (`PC`) and
+status register (`SR`) in the stack (marked by the stack pointer register,
+`SP`), and jump to the interrupt handler. WepSIM implements vectored interrupts
+where, similarly to the mechanism described in @fig:vectored-interrupts,
+register `RT1` holds the interrupt type#footnote[By convention, values `0x00` to
+  `0x08` are reserved for exceptions and system calls, while values `0x09` to
+  `0xFF` are reserved for I/O devices.], and the interrupt vector table's base
+address is always `0x0`. This value is then multiplied by $4$ to obtain the
+handler address from memory, and then it stores it in `PC`. The vector table
+must be explicitly set by the user in the "kernel data" memory segment, through
+the use of the `.kdata` assembly directive. At the end of the interrupt handler,
+the _return from interrupt_ (`reti`) instruction must be executed in order to
+restore the `PC` and `SR`, as shown in @alg:wepsim-reti.
 
 #algorithm(
   title: [WepSIM's interrupt hook],
@@ -455,10 +458,10 @@ in `RT1`, and performs the interrupt hook (@alg:wepsim-hook). Upon receiving the
 Most computer applications require some a way to measure time intervals, either
 for scheduling tasks, polling for user inputs, or correctly implementing
 communication protocols. Most of these can be accomplished through software, by
-performing what's called "busy waiting" -- using a dedicated thread to keep
-track of the elapsed time (for example, by incrementing a counter until a value
-is reached). Unfortunately, these _software timers_ are not only inefficient, as
-you have one less thread available, but also inaccurate, as both the number of
+performing what's called "busy waiting"---using a dedicated thread to keep track
+of the elapsed time (for example, by incrementing a counter until a value is
+reached). Unfortunately, these _software timers_ are not only inefficient---as
+you have one less thread available---but also inaccurate, as both the number of
 cycles an instruction will take and the clock frequency that determines the
 duration of those cycles are not consistent.
 
@@ -478,11 +481,11 @@ instances with different frequencies @WilmshurstTim2012FaEE[chap. 9.5]
 @FAN2015607[chap. 22.1].
 
 
-=== Timer implementations
+=== Timer implementations <sec:timer-impl>
 Most modern timer implementations involve, as we mentioned before, a PIT that is
 typically configured on startup through the use of CSRs, which generate an
 interrupt that, through the use of vectored interrupts, effectively acts as a
-"callback" -- a function that the user sets and is _called back_ when the
+"callback"---a function that the user sets and is _called back_ when the
 deadline is met. This is generally managed in PCs by the OS, where the user can
 set these timers through system calls; and in the case of embedded systems
 without OS, the specific pins are set by the programmer.
@@ -490,8 +493,9 @@ without OS, the specific pins are set by the programmer.
 // Sinclair ZX Spectrum
 One of the simplest implementations is the ZX Spectrum, which uses an internal
 clock to generate a maskable interrupt with a frequency of 50Hz#footnote[For the
-  UK model.], which is used for the 'keyboard' routine @logan1983complete[pp.
-  2--6]
+  UK models. The NTSC/PAL models used a 60Hz frequency due to the different
+  display refresh rate.], which is used for the 'keyboard' routine
+@logan1983complete[pp. 2--6]
 
 // RISC-V ISA
 On the other hand, the RISC-V ISA (both in its 32-bit and 64-bit variants)
@@ -512,14 +516,13 @@ Of the simulators mentioned in @sec:interrupt-simulation, only SAILATOR
 @Cano2025SAILATOR and Spike @SpikeRISCV implement RISC-V's timers. On Z80 CPU
 simulators, as timers are not described in the ISA, don't usually have any timer
 support, but most ZX Spectrum simulators do generate a maskable interrupt on a
-50Hz frequency, as the keyboard routine requires it. WepSIM includes a
-memory-mapped device that can be configured to generate interrupts every $n$
-clock cycles, as shown in Example 21.
+50Hz frequency, as the keyboard routine requires it. WepSIM includes an I/O
+device that can be configured to generate interrupts every $n$ clock cycles, as
+shown in Example 21.
 
 
 
-
-== Memory-mapped I/O <sec:mmio>
+== I/O devices <sec:devices>
 // types of I/O
 The way a computer interacts with its environment is through the use of
 _Input/Output_ devices, also called _peripherals_, and the interface where that
@@ -529,9 +532,11 @@ hardware to the CPU, as the software is in charge of handling that interaction.
 There are two main approaches for addressing this memory: using a portion of the
 system's memory address space (_memory-mapped_), and exchanging data through
 simple load and store memory operations; and using a separate memory address
-space, also called "ports", which require special input/output instructions
-@Carballeira2025Devices.
+space, also called "ports", which require special input/output instructions---as
+is the case of the Z80 CPU @ZilogZ80 @Carballeira2025Devices.
 
+
+=== Memory-mapped I/O <sec:mmio>
 // registers
 The latter is the most commonly used in modern computer systems, as it
 simplifies the interaction for software developers. All of these devices
@@ -543,36 +548,57 @@ input data bus is stored to the register), _output-enable_ (`OE`, which controls
 whether the data from the register is put in the output data bus), and
 chip-select (`CS`, which enables the register). When a CPU wants to read or
 write to memory, it activates its `R/W` signal and takes control of the `DATA`
-bus. This signal is directly connected, as shown in @fig:mmreg, to the `OE`
-input of all registers, as well as the inverted signal to the `CE` input, so
-that when a write operation is requested (`R/W` signal set high), the data is
+bus. This signal is directly connected---as shown in #ref(<fig:mmreg>)---to the
+`OE` input of all registers, as well as the inverted signal to the `CE` input,
+so that when a write operation is requested (`R/W` signal set high), the data is
 stored to the register, and if it's low, the value from the register is sent to
 the bus. In order to select which register is selected, a decoder is connected
 to the `CS` signal, so that the register is only enabled if it's the one that is
-addressed @Bulić2024[chap. 1.1 -- 1.2].
-
-// address decoding
-This decoder can be a simple AND gate set to the specific address of the
-register, as the one in @fig:mmreg, or some other type of more complex logic,
-such as a multiplexer.
-
-@Bulić2024[chap. 1.3 -- 1.5].
-
+addressed @Bulić2024[chap. 1.1--1.2].
 
 #figure(
-  image("../img/memory-mapped_register.svg", width: 50%),
+  image("../img/memory_mapped_register.svg", width: 45%),
   caption: [A simple memory-mapped register @Bulić2024[fig. 1.4]],
 ) <fig:mmreg>
 
+// address decoding
+For decoding these addresses, there are two main methods: _full address
+decoding_, where the circuit tries to match the whole address, as is the case in
+@fig:mmreg; and _partial address decoding_, where the circuit only matches a
+subset of bits---typically the most significant bits---to determine if the
+address belongs to the device. To map registers from the same device
+consecutively in partial address decoding---useful for creating abstractions in
+software---the least significant bits are also matched with simple AND gates, as
+shown in @fig:partial-address-decoding. Partial address matching is the
+preffered way of implementing devices in hardware, as it requires less logic
+gates to implement @Bulić2024[chap. 1.3--1.5].
 
-=== MMIO implementations <sec:mmio-impl>
+#figure(
+  image("../img/partial_address_decoding.svg", width: 80%),
+  caption: [Partial address decoding of eight registers @Bulić2024[fig. 1.8]],
+) <fig:partial-address-decoding>
+
+
+=== I/O implementation and simulation <sec:devices-impl>
 
 ==== Z80 peripherals
 
-
-=== MMIO simulation
+@Black2018ZX1 @Black2018ZX2 @Black2018ZX3
 
 ==== Devices in WepSIM
+Due to the fact that devices in WepSIM are implemented on their own separate
+memory address space, WepSIM's Control Unit (@fig:wepsim-cu) includes two pins
+connected to the control bus---`IOR` and `IOW`---in order to signal a read or
+write operation to a device. As shown in @fig:wepsim-ep, the keyboard and
+display devices only have a data register and a status register, but the rest of
+the devices include an extra control register. The registers are addressed by
+reading the 2-byte port address from the address bus, and they use partial
+addressing, where the first byte selects the device and the last byte, the
+register @wepsimHandbook[chap. 2.5--2.6].
+
+// specifics
+As described in @sec:devices-impl, the timer device
 
 
 
+// == CREATOR???

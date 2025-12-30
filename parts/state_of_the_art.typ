@@ -15,6 +15,7 @@
 
 = State of the art
 // TODO: blah blah blah
+// #secref(<sec:>)
 
 
 == Interrupts
@@ -516,9 +517,9 @@ Of the simulators mentioned in @sec:interrupt-simulation, only SAILATOR
 @Cano2025SAILATOR and Spike @SpikeRISCV implement RISC-V's timers. On Z80 CPU
 simulators, as timers are not described in the ISA, don't usually have any timer
 support, but most ZX Spectrum simulators do generate a maskable interrupt on a
-50Hz frequency, as the keyboard routine requires it. WepSIM includes an I/O
-device that can be configured to generate interrupts every $n$ clock cycles, as
-shown in Example 21.
+50Hz frequency, as the keyboard routine requires it. WepSIM includes an timer
+device---named "I/O"---that can be configured to generate interrupts every $n$
+clock cycles, as shown in Example 21.
 
 
 
@@ -532,8 +533,8 @@ hardware to the CPU, as the software is in charge of handling that interaction.
 There are two main approaches for addressing this memory: using a portion of the
 system's memory address space (_memory-mapped_), and exchanging data through
 simple load and store memory operations; and using a separate memory address
-space, also called "ports", which require special input/output instructions---as
-is the case of the Z80 CPU @ZilogZ80 @Carballeira2025Devices.
+space, also called "ports", which require special input/output instructions
+@Carballeira2025Devices.
 
 
 === Memory-mapped I/O <sec:mmio>
@@ -575,30 +576,69 @@ gates to implement @Bulić2024[chap. 1.3--1.5].
 
 #figure(
   image("../img/partial_address_decoding.svg", width: 80%),
-  caption: [Partial address decoding of eight registers @Bulić2024[fig. 1.8]],
+  caption: [Partial address decoding of eight registers @Bulić2024[fig. 1.9]],
 ) <fig:partial-address-decoding>
 
 
 === I/O implementation and simulation <sec:devices-impl>
+// TODO: blah blah
+
+==== Devices in RISC-V
+RISC-V implements _Memory-Mapped I/O_ (MMIO). In particular, the specification
+states that the _execution environment interface_ (EEI) #quote[will define what
+  I/O operations are possible, and in particular, which memory addresses when
+  accessed by load and store instructions will be treated and ordered as device
+  input and device output operations respectively rather than memory reads and
+  writes] @RISCVUnprivileged[chap. 2.7].
+
+// examples
+For example, the FE310-G002 RISC-V based _System-on-Chip_ (SoC)---based on the
+RV32IMAC ISA---uses memory-mapped registers for its GPIO interface, with four
+registers (input/output value and input/output enable) that control its 32 pins
+@Bulić2024[chap. 1.7]. In terms of simulators, only Spike and Sail implement
+some platform-defined MMIO @SpikeRISCV @SailRISCV. SAILATOR implements the basic
+keyboard and display operations through the use of system calls, which directly
+interact with the web application @Cano2025SAILATOR.
 
 ==== Z80 peripherals
-
-@Black2018ZX1 @Black2018ZX2 @Black2018ZX3
+The Z80 CPU interfaced with devices through up to 256 ports, through the `IN`
+and `OUT` instructions @ZilogZ80. The Sinclair ZX Spectrum used this for, among
+other devices, its screen and keyboard. For the screen, there were two modes of
+operation. The simplest way was intended for text output, as the system could
+write the values of specific characters directly to the screen. On the other
+hand, the system reserved one byte per pixel of main memory, and the ULA
+(Uncommited Logic Array) was the chip in charge of rendering the screen by
+reading the memory segment, which was triggered by writing to ULA port. For the
+keyboard, an input port codifies the keys that are currently pressed, and a
+subroutine triggered by an interrupt on a timer---as mentioned in #ref(
+  <sec:timer-impl>,
+)---reads those values @Black2018ZX1 @Black2018ZX2 @logan1983complete.
 
 ==== Devices in WepSIM
-Due to the fact that devices in WepSIM are implemented on their own separate
-memory address space, WepSIM's Control Unit (@fig:wepsim-cu) includes two pins
-connected to the control bus---`IOR` and `IOW`---in order to signal a read or
-write operation to a device. As shown in @fig:wepsim-ep, the keyboard and
-display devices only have a data register and a status register, but the rest of
-the devices include an extra control register. The registers are addressed by
-reading the 2-byte port address from the address bus, and they use partial
-addressing, where the first byte selects the device and the last byte, the
-register @wepsimHandbook[chap. 2.5--2.6].
+WepSIM's Control Unit (@fig:wepsim-cu) includes two pins connected to the
+control bus---`IOR` and `IOW`---in order read or write from/to a device
+register, similar to the `OE` and `CE` pins mentioned in @sec:mmio. As shown in
+@fig:wepsim-ep, the keyboard and display devices only have a data register and a
+status register, but the rest of the devices include an extra control register.
+The registers are addressed by reading the 2-byte port address from the address
+bus, and they use partial addressing, where the first byte selects the device
+and the last byte, the register. WepSIM devices are implemented on their own
+separate memory address space and use specific `in`/`out`
+instructions#footnote[As the microinstructions are programmable, a user _could_
+  implement devices as memory-mapped by modifying the read/write memory
+  instructions.]. Nevertheless, the devices have _Direct Memory Access_, in
+order to read data from main memory, although there are no specific signals to
+control that feature @wepsimHandbook[chap. 2.5--2.6].
 
 // specifics
-As described in @sec:devices-impl, the timer device
-
-
-
-// == CREATOR???
+As described in @sec:devices-impl, the timer device---with a device ID of
+`0x11`---generates an interrupt if its `IOCR`---port `0x1104`---is set to `0x0`
+every $n$ cycles, $n$ being the value of its `IODR`---port `0x1108`. The
+keyboard device, when a key is pressed, stores in its status register (`KBSR`)
+the value `0x1`, and the ASCII value of the key in its data register (`KBDR`),
+and the status register is automatically reset after the data register is read.
+The display device, on the other hand, automatically displays the ASCII
+character stored in its data register (`DDR`) and signals through its status
+register (`DSR`) that the operation has finished. Other devices, such as the LED
+matrix, read data from the main memory address stored in its data register
+@wepsimHandbook[chap. 2.5--2.6].

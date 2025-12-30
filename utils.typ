@@ -83,3 +83,20 @@
   [~]
   emph(body)
 }
+
+
+/// Prints the number and name of the section.
+///
+/// - label (label): Section label
+/// -> content
+#let secref(label) = context {
+  let el = query(label).first()
+  assert(el.func() == heading)
+
+  link(el.location())[
+    #el.supplement #numbering(
+      "1.1",
+      ..counter(heading).at(el.location()),
+    ), #emph(el.body)
+  ]
+}

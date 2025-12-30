@@ -13,7 +13,7 @@
 
 
 
-= State of the art
+= State of the Art <chap:state-of-the-art>
 // TODO: blah blah blah
 // #secref(<sec:>)
 

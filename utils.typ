@@ -85,18 +85,15 @@
 }
 
 
-/// Prints the number and name of the section.
+/// Prints the number and name of the specified heading.
 ///
-/// - label (label): Section label
+/// - label (label): Heading label
 /// -> content
-#let secref(label) = context {
+#let headref(label) = context {
   let el = query(label).first()
-  assert(el.func() == heading)
+  assert(el.func() == heading, message: "Label must reference a heading")
 
-  link(el.location())[
-    #el.supplement #numbering(
-      "1.1",
-      ..counter(heading).at(el.location()),
-    ), #emph(el.body)
-  ]
+  ref(label)
+  [, ]
+  link(el.location(), emph(el.body))
 }

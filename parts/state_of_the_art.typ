@@ -333,27 +333,27 @@ support for polled interrupts. It allows putting special tags in registers in
 the ISA definition: an _interrupt cause_ (`CAUSE`) register, which signals that
 an interrupt occurred when its value is different from `0x0`, and an _exception
 program counter_ (`EPC`), which stores the address of the interrupted
-instruction (_program counter_, `PC`). As shown in @alg:creator-execution-cycle,
-in CREATOR 5#footnote[As it will be mentioned in @chap:implementation, the
-  process of implementing these new features in the simulator, among other
-  factors, involved an almost complete rewrite of all its systems. The term
-  "CREATOR 5" will be used to refer to the state of the project before these
-  changes (version 5.0), and "CREATOR 6" will be used to refer to the state
-  after the changes (version 6.0).]'s instruction execution cycle, interrupts
-are checked before fetching the instruction, therefore if an instruction
-generates an interrupt, the next instruction is the one to get interrupted.
-These registers were only implemented in the MIPS-32 architecture provided with
-the simulator.
+instruction (_program counter_, `PC`). As shown in
+@alg:creator5-execution-cycle, in CREATOR 5#footnote[As it will be mentioned in
+  @chap:implementation, the process of implementing these new features in the
+  simulator, among other factors, involved an important rewrite of all its
+  systems. The term "CREATOR 5" will be used to refer to the state of the
+  project before these changes (version 5.0), and "CREATOR 6" will be used to
+  refer to the state after the changes (version 6.0).]'s instruction execution
+cycle, interrupts are checked before fetching the instruction, therefore if an
+instruction generates an interrupt, the next instruction is the one to get
+interrupted. These registers were only implemented in the MIPS-32 architecture
+provided with the simulator.
 
 #algorithm(
   title: [CREATOR 5's instruction execution cycle],
-  label: <alg:creator-execution-cycle>,
+  label: <alg:creator5-execution-cycle>,
 )[
   + *if* $#raw("CAUSE") != 0$ *then* #alg-comment[Interrupt detection]
     + $#raw("EPC") <- #raw("PC")$
     + $#raw("PC") <- 0$
     + $#raw("CAUSE") <- 0$
-  - *end*
+  - *end if*
   + Fetch _instruction_
   + Decode _instruction_
   + Increment `PC`
@@ -445,7 +445,7 @@ in `RT1`, and performs the interrupt hook (@alg:wepsim-hook). Upon receiving the
     + $#raw("RT1") <- #raw("INTV")$
     - $#raw("INT") <- 0$ #alg-comment[Caused by I/O device]
     + Interrupt hook (@alg:wepsim-hook)
-  - *end*
+  - *end if*
   + Fetch _instruction_
   + Increment `PC`
   + Decode _instruction_

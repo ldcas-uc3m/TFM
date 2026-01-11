@@ -97,3 +97,14 @@
   [, ]
   link(el.location(), emph(el.body))
 }
+
+/// Prints the number and name of the specified heading.
+///
+/// - label (label): Heading label
+/// -> content
+#let algref(label) = context {
+  let el = query(label).first()
+  assert(el.kind == "algorithm", message: "Label must reference an algorithm")
+
+  [ #emph(el.caption.body) (#ref(label)) ]
+}

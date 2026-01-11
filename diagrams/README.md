@@ -1,5 +1,17 @@
 # Diagrams
-The diagrams are made in [Typst](https://typst.app/) using [CeTZ](https://cetz-package.github.io/).
+
+## Drawio diagrams
+Some diagrams are made in [draw.io](https://www.drawio.com/) (`.drawio` files) and need to be converted to SVG to be inserted in Typst.
+
+You can use [Draw.io Export](https://github.com/rlespinasse/drawio-export) to convert all of them:
+```bash
+docker run -it -v $(pwd):/data rlespinasse/drawio-export --format=svg --remove-page-suffix --output=.
+```
+
+
+
+## Typst diagrams
+Files ending in `.typ` are made in [Typst](https://typst.app/) using [CeTZ](https://cetz-package.github.io/).
 
 To export a specific diagram as SVG, use `diagram.typ` as such:
 ```sh

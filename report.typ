@@ -45,7 +45,12 @@
   ),
   // appendixes: [],
   // glossary: glossary-entries,
-  // abbreviations: (TFM: "Trabajo de Fin de Máster"),
+  abbreviations: (
+    TFM: "Trabajo de Fin de Máster",
+    ISA: "Instruction Set Architecture",
+    UI: "User Interface",
+    CPU: "Central Processing Unit",
+  ),
   genai-declaration: (usage: false),
 )
 

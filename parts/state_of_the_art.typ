@@ -18,7 +18,7 @@
 // #secref(<sec:>)
 
 
-== Interrupts
+== Interrupts <sec:soa-interrupt>
 Authors and vendors use different terms to refer to the same concept, a way of
 stopping the current execution of the program due to an exceptional situation.
 In this thesis, the term _interrupt_ will be used.

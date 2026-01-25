@@ -95,8 +95,10 @@
 
   ref(label)
   [, ]
-  link(el.location(), emph(el.body))
+  // link(el.location(), emph(el.body))
+  emph(el.body)
 }
+
 
 /// Prints the number and name of the specified heading.
 ///
@@ -107,4 +109,14 @@
   assert(el.kind == "algorithm", message: "Label must reference an algorithm")
 
   [ #emph(el.caption.body) (#ref(label)) ]
+}
+
+
+/// Like LaTeX's `\noindent`, removes the first-line indentation of the paragraph.
+///
+/// - body (content): Content.
+/// -> content
+#let noindent(body) = {
+  set par(first-line-indent: 0pt)
+  body
 }

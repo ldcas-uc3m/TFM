@@ -1,8 +1,11 @@
 #import "/utils.typ": *
 
 = Design <chap:design>
-
-// TODO: blah blah
+This chapter provides a full description of the proposed solution. It details
+the system's design process, by discussing the different alternatives (#headref(
+  <sec:study-solution>,
+)), and describes the proposed architecture (#headref(<sec:sys-architecture>)),
+including all components and design decisions.
 
 
 == Study of the Solution <sec:study-solution>
@@ -59,15 +62,34 @@ simulator, by giving them the optimal tools for the task. The result is a
 "generic" interrupt model.
 
 // "generic" interrupt model
-// - pending
-// - handle
-// - isEnabled / global
-// - enable/disable/global
-// - create
-// - clear/global
+The approach is to divide the interrupt model into a set of common actions whose
+behaviour is then defined by each specific ISA. The selected interrupt handler
+will implement the behaviour of each action. As stated in
+@subsec:interrupt-taxonomy, most ISAs differentiate between different interrupt
+types, therefore our model must support multiple interrupt types. Some
+ISAs--like RISC-V--also support enabling and disabling interrupts globally, that
+is, all interrupt types.
 
+#noindent[The set of actions in the model is the following:]
+- Generates a specific type of interrupt.
+- Evaluates what types of interrupts are currently pending, and returns the
+  highest priority one.
+- Clears pending interrupts, both globally and by type.
+- Handling a pending interrupt type.
+- Enabling and disabling interrupts, either one specific type of interrupt, or
+  globally.
+- Evaluating if interrupts are enabled, both globally and by type.
 
-// handler
+// handling subroutine
+The handling subroutine, specified in @alg:creator6-interrupt-handler, evaluates
+the pending interrupts and executes its handler, if interrupts are globally
+enabled and that type of interrupt is enabled. This algorithm only allows for
+one type of interrupt to be handled each time, and it's up to the implementation
+of the evaluating action to apply the correct priority to each interrupt type
+and return the highest priority interrupt. As stated previously, instructions,
+timers, and devices can generate interrupts through the use of the specified
+action.
+
 #algorithm(
   title: [CREATOR 6's interrupt handling subroutine],
   label: <alg:creator6-interrupt-handler>,
@@ -85,13 +107,32 @@ simulator, by giving them the optimal tools for the task. The result is a
   + `interruptHandle(pending_interrupt)`
 ]
 
+// interrupt handler
 
-// auxiliar functions
+// why? (syscall)
+One of the objectives of the interrupt feature in the simulator--as stated in
+#highlight[User Requirement XXX]--is for it to be "opt-in", that is, ensuring
+that the average user that doesn't need to understand interrupts in order to use
+the simulator's basic functionalities. The problem arises with the system calls,
+which _must_ be implemented with interrupts, but are part of the basic example
+programs of the simulator, as they enable communication with the keyboard and
+display. In CREATOR 5, the system call instructions#footnote[`ecall` instruction
+  in RISC-V, `syscall` instruction in MIPS-32.] doesn't make use of any type of
+interrupts or execution mode changes; instead, it emulates an operating system
+by implementing its functionality in the instruction
+definition#footnote[Currently, it uses a switch case that reads one or more
+  specific registers and calls the desired internal functions.]. The objective
+is to allow the user to implement its own interrupt handler, while also
+providing a "fallback" system that is transparent for the regular users. There
+are two possible approaches to solving this: loading a basic kernel with each
+program without the user noticing it, and allowing the user to write their own
+kernel; and using multiple interrupt handlers, a default one that acts as the
+old system call handler, and another that uses architecture-defined interrupt
+actions, forcing the user to handle interrupts.
 
 
-// CREATOR vs Architecture handler
 
-=== Timers
+=== Timers <sec:design-timer>
 
 #algorithm(
   title: [CREATOR 6's timer handling subroutine],
@@ -105,7 +146,7 @@ simulator, by giving them the optimal tools for the task. The result is a
 ]
 
 
-=== Memory-mapped I/O
+=== Memory-mapped I/O <sec:design-mmio>
 
 
 #algorithm(
@@ -129,3 +170,15 @@ simulator, by giving them the optimal tools for the task. The result is a
   image("/diagrams/architecture/core.svg", width: 90%),
   caption: [`core` module architecture],
 )
+
+
+=== Interrupt Manager
+
+
+=== I/O Manager
+
+
+=== Timer Manager
+
+
+=== CAPI

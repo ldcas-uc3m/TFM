@@ -15,11 +15,12 @@ a description of the overall structure (#headref(
 // CREATOR
 CREATOR (_didaCtic and geneRic assEmbly progrAmming simulaTOR_) is an
 educational interactive plaftorm for assembly programming. It is developed by
-the ARCOS research group of Universidad Carlos III de Madrid in order to aid in
+the ARCOS research group at Universidad Carlos III de Madrid in order to aid in
 the #highlight[teaching] of the Computer Structure and Computer Architecture
 courses. Its focus is on providing a simple interactive experience for the
 students, while being able to support multiple architectures, or modify existing
-ones, without needing to create a new execution language @Camarmas2024CREATOR.
+ones, without needing to create a new simulator for each language
+@Camarmas2024CREATOR.
 
 // TODO: finish
 
@@ -52,4 +53,6 @@ This document contains the following chapters:
 - #headref(<chap:state-of-the-art>), discusses the technological environment
   surrounding interrupts, timers, and I/O devices, including its hardware
   implementation and simulation.
+- #headref(<chap:design>), details the design process and the system's
+  architecture, including all of its components.
 - #headref(<apx:genai>), describes the use of Generative AI in this work.

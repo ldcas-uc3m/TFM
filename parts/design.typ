@@ -71,10 +71,10 @@ ISAs--like RISC-V--also support enabling and disabling interrupts globally, that
 is, all interrupt types.
 
 #noindent[The set of actions in the model is the following:]
-- Generates a specific type of interrupt.
-- Evaluates what types of interrupts are currently pending, and returns the
+- Generating a specific type of interrupt.
+- Evaluating what types of interrupts are currently pending, and returns the
   highest priority one.
-- Clears pending interrupts, both globally and by type.
+- Clearing pending interrupts, both globally and by type.
 - Handling a pending interrupt type.
 - Enabling and disabling interrupts, either one specific type of interrupt, or
   globally.
@@ -107,7 +107,7 @@ action.
   + `interruptHandle(pending_interrupt)`
 ]
 
-// interrupt handler
+/* interrupt handler */
 
 // why? (syscall)
 One of the objectives of the interrupt feature in the simulator--as stated in
@@ -123,16 +123,41 @@ by implementing its functionality in the instruction
 definition#footnote[Currently, it uses a switch case that reads one or more
   specific registers and calls the desired internal functions.]. The objective
 is to allow the user to implement its own interrupt handler, while also
-providing a "fallback" system that is transparent for the regular users. There
-are two possible approaches to solving this: loading a basic kernel with each
-program without the user noticing it, and allowing the user to write their own
-kernel; and using multiple interrupt handlers, a default one that acts as the
-old system call handler, and another that uses architecture-defined interrupt
-actions, forcing the user to handle interrupts.
+providing a "fallback" system that is transparent for the regular users.
+
+// approaches
+There are two possible approaches to solving this: embedding a basic interrupt
+handler--written in assembly--with each program, and allowing the user to
+replace it; and using multiple interrupt handlers, a default one that bypasses
+the architecture-defined interrupt actions, and another that executes the
+actions, forcing the user to write their own interrupt handler. The main
+difference between the two approaches is that the latter allows writting the
+default interrupt handler in JavaScript, which in turns allows interaction with
+the system through the CREATOR API (CAPI), offering the user more flexibility
+and ease of use. Furthermore, this approach allows switching handlers without
+needing to recompile, although this is perhaps only useful for debugging
+purposes. For the reasons mentioned, the multiple handler approach was selected.
+
+// y ahora, querido lector, es cuando me he dado cuenta de que elegí mal, pero
+// es demasiado tarde para cambiar el código...
 
 
 
 === Timers <sec:design-timer>
+
+// actions
+As with interrupts, a generic timer model can be divided into a set of actions:
+- Advancing the timer once per tick.
+- Handling the different timers, typically evaluating if they reach certain
+  threshold and generating an exception if it does.
+- Enabling and disabling timers.
+- Evaluating if timers are enabled.
+
+// handling subroutine
+The timer handling subroutine, specified in @alg:creator6-timer-handler, would
+therefore advance and handle the timers once every tick--a tick being a unit of
+time composed of one or several clock cycles--if the timers are enabled.
+
 
 #algorithm(
   title: [CREATOR 6's timer handling subroutine],
@@ -141,8 +166,10 @@ actions, forcing the user to handle interrupts.
   + *if* _not_ `timerEnabled()` *then*
     + *return*
   - *end if*
-  + `advanceTimer()`
-  + `handleTimer()`
+  + *if* $#raw("clk_cycles") % #raw("tick_cycles") = 0$ *then*
+    + `timerAdvance()`
+    + `timerHandle()`
+  - *end if*
 ]
 
 

@@ -158,7 +158,6 @@ The timer handling subroutine, specified in @alg:creator6-timer-handler, would
 therefore advance and handle the timers once every tick--a tick being a unit of
 time composed of one or several clock cycles--if the timers are enabled.
 
-
 #algorithm(
   title: [CREATOR 6's timer handling subroutine],
   label: <alg:creator6-timer-handler>,
@@ -174,6 +173,23 @@ time composed of one or several clock cycles--if the timers are enabled.
 
 
 === Memory-mapped I/O <sec:design-mmio>
+// why mmio?
+As stated in @sec:soa-mmio, there are two main approaches used for I/O
+communication in computers: using specific ports for communication, and using
+memory. Ports, as they require special instructions, can be emulated in the
+instruction definition with CREATOR 6's plugin system #footnote[This system is
+  out of the scope of this thesis, but it will be briefly presented in
+  @sec:sys-architecture.], but for ISAs that don't offer those
+instructions--like RISC-V--, interaction with the devices the simulator offers
+can only occur through the use of MMIO.
+
+// device definition
+It is possible to model a "generic" device
+
+// address decoding
+
+
+// handler
 
 
 #algorithm(
@@ -197,6 +213,8 @@ time composed of one or several clock cycles--if the timers are enabled.
   image("/diagrams/architecture/core.svg", width: 90%),
   caption: [`core` module architecture],
 )
+
+// mention plugin system
 
 
 === Interrupt Manager

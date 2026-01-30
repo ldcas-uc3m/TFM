@@ -537,7 +537,7 @@ space, also called "ports", which require special input/output instructions
 @Carballeira2025Devices.
 
 
-=== Memory-mapped I/O <sec:mmio>
+=== Memory-mapped I/O <sec:soa-mmio>
 // registers
 The latter is the most commonly used in modern computer systems, as it
 simplifies the interaction for software developers. All of these devices
@@ -617,13 +617,13 @@ subroutine triggered by an interrupt on a timer---as mentioned in #ref(
 ==== Devices in WepSIM
 WepSIM's Control Unit (@fig:wepsim-cu) includes two pins connected to the
 control bus---`IOR` and `IOW`---in order read or write from/to a device
-register, similar to the `OE` and `CE` pins mentioned in @sec:mmio. As shown in
-@fig:wepsim-ep, the keyboard and display devices only have a data register and a
-status register, but the rest of the devices include an extra control register.
-The registers are addressed by reading the 2-byte port address from the address
-bus, and they use partial addressing, where the first byte selects the device
-and the last byte, the register. WepSIM devices are implemented on their own
-separate memory address space and use specific `in`/`out`
+register, similar to the `OE` and `CE` pins mentioned in @sec:soa-mmio. As shown
+in @fig:wepsim-ep, the keyboard and display devices only have a data register
+and a status register, but the rest of the devices include an extra control
+register. The registers are addressed by reading the 2-byte port address from
+the address bus, and they use partial addressing, where the first byte selects
+the device and the last byte, the register. WepSIM devices are implemented on
+their own separate memory address space and use specific `in`/`out`
 instructions#footnote[As the microinstructions are programmable, a user _could_
   implement devices as memory-mapped by modifying the read/write memory
   instructions.]. Nevertheless, the devices have _Direct Memory Access_, in

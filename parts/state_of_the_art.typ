@@ -523,7 +523,7 @@ clock cycles, as shown in Example 21.
 
 
 
-== I/O devices <sec:devices>
+== I/O devices <sec:soa-devices>
 // types of I/O
 The way a computer interacts with its environment is through the use of
 _Input/Output_ devices, also called _peripherals_, and the interface where that

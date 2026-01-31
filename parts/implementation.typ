@@ -7,3 +7,5 @@
 
 
 // devices (console, os)
+
+// device visualization

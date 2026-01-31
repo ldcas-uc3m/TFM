@@ -3,7 +3,7 @@
 ## Drawio diagrams
 Some diagrams are made in [draw.io](https://www.drawio.com/) (`.drawio` files) and need to be converted to SVG to be inserted in Typst.
 
-You can use [Draw.io Export](https://github.com/rlespinasse/drawio-export) to convert all of them:
+You can use [Draw.io Export](https://github.com/rlespinasse/drawio-export) (a docker image) to convert all of them in one go:
 ```bash
 docker run -it -v $(pwd):/data rlespinasse/drawio-export --format=svg --remove-page-suffix --output=.
 ```

@@ -174,23 +174,38 @@ time composed of one or several clock cycles--if the timers are enabled.
 
 === Memory-mapped I/O <sec:design-mmio>
 // why mmio?
-As stated in @sec:soa-mmio, there are two main approaches used for I/O
+As stated in @sec:soa-devices, there are two main approaches used for I/O
 communication in computers: using specific ports for communication, and using
 memory. Ports, as they require special instructions, can be emulated in the
 instruction definition with CREATOR 6's plugin system #footnote[This system is
-  out of the scope of this thesis, but it will be briefly presented in
+  out of the scope of the thesis, but it will be briefly described in
   @sec:sys-architecture.], but for ISAs that don't offer those
 instructions--like RISC-V--, interaction with the devices the simulator offers
 can only occur through the use of MMIO.
 
 // device definition
-It is possible to model a "generic" device
+It is possible to model a "generic" device as a set of registers and a handler
+function. Most devices have at least a control register for the CPU to signal an
+action to perform, and optionally a status register for the device to broadcast
+its status. Instead of a single data register, and to enable more flexibility
+for device definition, a data range is provided, that is, a set of contiguous
+memory that can be used for communication and to represent several different
+registers. The handler is in charge of interacting with the different registers
+and interacting with the simulator, having _Direct Memory Access_. A device can
+also be enabled or disabled in the architecture definition.
 
 // address decoding
+To give the users flexibility over ISA definition, the addresses of the
+different devices' registers are configured in the architecture definition. This
+also gives the user the ability to map the registers to addresses both inside
+and outside main memory#footnote[The size and layout of the main memory is
+  already configured in the architecture definition.]. For address decoding, any
+access to memory will first check if the address belongs to a device register,
+and perform the operation in the device's memory if it does.
 
-
-// handler
-
+// handling subroutine
+The device handling subroutine, as shown in @alg:creator6-device-handler,
+executes the handler of all enabled devices once per cycle.
 
 #algorithm(
   title: [CREATOR 6's device handling subroutine],
@@ -220,7 +235,7 @@ It is possible to model a "generic" device
 === Interrupt Manager
 
 
-=== I/O Manager
+=== Devices
 
 
 === Timer Manager

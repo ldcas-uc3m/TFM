@@ -1,12 +1,14 @@
 # Diagrams
 
 ## Drawio diagrams
-Some diagrams are made in [draw.io](https://www.drawio.com/) (`.drawio` files) and need to be converted to SVG to be inserted in Typst.
+Some diagrams are made in [draw.io](https://www.drawio.com/) (`.drawio` files) or [Mermaid](https://mermaid.js.org/) (`.mmd` files) and need to be converted to SVG to be inserted in Typst.
 
-You can use [Draw.io Export](https://github.com/rlespinasse/drawio-export) (a docker image) to convert all of them in one go:
-```bash
-docker run -it -v $(pwd):/data rlespinasse/drawio-export --format=svg --remove-page-suffix --output=.
-```
+You can use the provided [`export.sh`](architecture/export.sh) script to export them, using:
+- [Draw.io Export](https://github.com/rlespinasse/drawio-export) (a docker image) 
+- [Mermaid CLI](https://github.com/mermaid-js/mermaid-cli)
+
+> [!NOTE]
+> Only Linux is supported for this script. You can try other methods to convert the files (e.g. their online apps). YMMV.
 
 
 

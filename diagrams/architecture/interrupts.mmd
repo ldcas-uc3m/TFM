@@ -1,0 +1,95 @@
+classDiagram
+    direction TB
+
+    class InterruptType {
+        <<enumeration>>
+        Software
+        Timer
+        External
+        EnvironmentCall
+        Maskable
+        NonMaskable
+    }
+
+    class InterruptStatus {
+        <<interface>>
+        + boolean globalEnabled
+        + Map~InterruptType, boolean~ enabled
+        + Map~InterruptType, boolean~ pendingInterrupts
+    }
+
+    class InterruptHandler {
+        <<abstract>>
+        - ArchitectureInterrupts config
+        + enable(status, type)
+        + globalEnable(status)
+        + disable(status, type)
+        + globalDisable(status)
+        + create(status, type)
+        + globalClear(status)
+        + check(status) InterruptType
+        + isEnabled(status, type) boolean
+        + isGlobalEnabled(status) boolean
+        + clear(status, type)
+        + handle(status, type)
+    }
+
+    class CREATORInterruptHandler {
+        - Function syscallHandler
+        + enable(status, type)
+        + disable(status, type)
+        + globalDisable(status)
+        + globalEnable(status)
+        + create(status, type)
+        + globalClear(status)
+        + isGlobalEnabled(status) boolean
+        + isEnabled(status, type) boolean
+        + check(status) InterruptType
+        + clear(status, type)
+        + handle(status, type)
+    }
+
+    class ArchitectureInterruptHandler {
+        - ArchitectureInterrupts config
+        - makeInjectedFunction()
+        + enable(status, type)
+        + disable(status, type)
+        + globalDisable(status)
+        + globalEnable(status)
+        + create(status, type)
+        + globalClear(status)
+        + isGlobalEnabled(status) boolean
+        + isEnabled(status, type) boolean
+        + check(status) InterruptType
+        + clear(status, type)
+        + handle(status, type)
+    }
+
+    class InterruptManager {
+        - InterruptHandler handler
+        - InterruptStatus status
+        - boolean customHandlerAllowed
+        + enable(type)
+        + globalEnable()
+        + disable(type)
+        + globalDisable()
+        + create(type)
+        + globalClear()
+        + check() InterruptType
+        + isEnabled(type) boolean
+        + isGlobalEnabled() boolean
+        + clear(type)
+        + handle(type)
+        + switchHandler(handlerType) InterruptManager
+        + reset()
+        - syncEnabledInterrupts()
+    }
+
+    %% Relationships
+    InterruptHandler <|-- CREATORInterruptHandler : extends
+    InterruptHandler <|-- ArchitectureInterruptHandler : extends
+    InterruptManager *-- InterruptHandler : uses
+    InterruptManager *-- InterruptStatus : maintains
+    InterruptManager ..> InterruptType : references
+    InterruptHandler ..> InterruptType : references
+    InterruptHandler ..> InterruptStatus : references

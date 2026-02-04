@@ -1,0 +1,25 @@
+classDiagram
+    class TimerManager {
+        - Function timerAdvance
+        - Function timerHandler
+        - Function timerIsEnabled
+        - Architecture architecture
+        + compile() void
+        + handle(currentCycles: number) void
+    }
+
+    class Architecture {
+        <<interface>>
+        + TimerConfig timer
+    }
+
+    class TimerConfig {
+        <<interface>>
+        + string advance
+        + string handler
+        + string is_enabled
+        + number tick_cycles
+    }
+
+    TimerManager --> Architecture : depends on
+    Architecture *-- TimerConfig : contains

@@ -227,7 +227,7 @@ executes the handler of all enabled devices once per cycle.
 #figure(
   image("/diagrams/architecture/core.svg", width: 90%),
   caption: [`core` module architecture],
-)
+) <fig:arch-core>
 
 // mention plugin system
 
@@ -235,10 +235,26 @@ executes the handler of all enabled devices once per cycle.
 === Interrupt Manager
 
 
+#figure(
+  image("/diagrams/architecture/interrupts.svg", width: 100%),
+  caption: [Interrupt Manager architecture],
+) <fig:arch-interrupts>
+
 === Devices
+
+#figure(
+  image("/diagrams/architecture/devices.svg", width: 50%),
+  caption: [Device Manager architecture],
+) <fig:arch-devices>
 
 
 === Timer Manager
+
+#figure(
+  image("/diagrams/architecture/timers.svg", width: 35%),
+  caption: [Timer Manager architecture],
+) <fig:arch-timers>
+
 
 
 === CAPI

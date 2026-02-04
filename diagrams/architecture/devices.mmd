@@ -1,0 +1,40 @@
+classDiagram
+    direction TB
+
+    class Device {
+        <<abstract>>
+        + readonly ctrl_addr: number
+        + readonly status_addr: number
+        + readonly data: Object
+        + enabled: boolean
+        + memory: Memory
+        + constructor(ctrl_addr, status_addr, data_start, data_end, enabled=true)
+        + isDeviceAddr(addr) boolean
+        + reset() void
+        + clear() void
+        + handler() void
+    }
+
+    class ConsoleDevice {
+        + handler() void
+        - write(value, type) void
+        - prepareRead(type) void
+    }
+
+    class OSDriver {
+        + handler() void
+    }
+
+    class DeviceManager {
+        + devices: Map~string, Device~
+        + constructor(devices)
+        + checkDeviceAddr(addr) string
+        + wakeDevice(id) void
+        + handleDevices() void
+        + resetDevices() void
+    }
+
+    %% relationships
+    Device <|-- ConsoleDevice
+    Device <|-- OSDriver
+    DeviceManager "1" o-- "*" Device

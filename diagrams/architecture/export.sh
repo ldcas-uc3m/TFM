@@ -4,7 +4,7 @@ set -euo pipefail
 
 
 # ----------
-# convert drawio
+# DRAWIO
 # ----------
 
 # check if docker
@@ -15,11 +15,17 @@ fi
 
 # convert
 echo "Converting draw.io files..."
-docker run -it -v $(pwd):/data rlespinasse/drawio-export --format=svg --remove-page-suffix --output=.
+docker run -it -v $(pwd):/data rlespinasse/drawio-export --format=svg --embed-diagram  --crop --remove-page-suffix --output=.
+
+# re-export svg bc fucking drawio
+for file in *.svg; do
+    inkscape "$file" --export-type=svg --export-area-drawing --export-plain-svg --export-filename="${file%.pdf}.svg" > /dev/null
+done
+
 
 
 # ----------
-# convert mermaid
+# MERMAID
 # ----------
 
 # check if bunx/npx
@@ -45,13 +51,15 @@ for file in *.mmd; do
     output_svg="${file%.mmd}.svg"
     echo "Converting $file -> $output_svg"
 
-    # we generate in PDF and re-encode to SVG w/ inkscape bc foreignObjects
-    # https://github.com/typst/typst/discussions/3090#discussioncomment-7960440
     $RUNNER @mermaid-js/mermaid-cli -i "$file" -o "$output_pdf" -c true-neutral-style.json --pdfFit
 
-    inkscape "$output_pdf" --export-type=svg --export-plain-svg --export-filename="$output_svg" > /dev/null
+    # we generate in PDF and re-encode to SVG w/ inkscape bc foreignObjects
+    # https://github.com/typst/typst/discussions/3090#discussioncomment-7960440
+    inkscape "$output_pdf" --export-type=svg --export-area-drawing --export-plain-svg --export-filename="$output_svg" > /dev/null
 
-    rm "$output_pdf"
+    rm -f "$output_pdf"
 done
+
+
 
 echo "Done!"

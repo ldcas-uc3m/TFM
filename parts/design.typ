@@ -307,3 +307,7 @@ module)#footnote[Their details are out of the scope of this thesis, but they
 
 
 == Deployment <sec:deployment>
+
+// github actions/ pages
+
+// ESP-32 & docker, remote lab?

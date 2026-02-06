@@ -22,12 +22,16 @@ students, while being able to support multiple architectures, or modify existing
 ones, without needing to create a new simulator for each language
 @Camarmas2024CREATOR.
 
-// TODO: finish
 
-// project
+// project financed by EU
 
 
 // interrupts, timers, and devices (real ecall)
+// - añadir dispositivos (usados en la vida real para todo)
+// - profes piden poder enseñar interrupciones (la base del hardware)
+// - añadir timers (OS, context switching, Real-Time Systems)
+// - unirlo implementando un ecall "real"
+//   -> dispositivos mmio para escribir a consola
 
 
 
@@ -39,10 +43,11 @@ educational purposes.
 
 // TODO: finish
 The secondary objectives, derived from the main objective, are as follows:
-- *O1:* Simulate
-- *O2:* Integrate
-- *O3:*
-- *O4:*
+- *O1:* Simulate interrupts...
+- *O2:* Simulate a timer that generate interrupts...
+- *O3:* Simulate a MMIO...
+- *O4:* Integrate these new features in a modular simulator...
+- *O5:* Didactic...
 
 
 

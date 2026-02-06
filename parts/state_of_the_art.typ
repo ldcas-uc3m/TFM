@@ -335,7 +335,7 @@ an interrupt occurred when its value is different from `0x0`, and an _exception
 program counter_ (`EPC`), which stores the address of the interrupted
 instruction (_program counter_, `PC`). As shown in
 @alg:creator5-execution-cycle, in CREATOR 5#footnote[As it will be mentioned in
-  @chap:implementation, the process of implementing these new features in the
+  @sec:implementation, the process of implementing these new features in the
   simulator, among other factors, involved an important rewrite of all its
   systems. The term "CREATOR 5" will be used to refer to the state of the
   project before these changes (version 5.0), and "CREATOR 6" will be used to

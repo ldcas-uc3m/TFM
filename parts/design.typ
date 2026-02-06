@@ -1,6 +1,6 @@
 #import "/utils.typ": *
 
-= Design <chap:design>
+= Design, Implementation, and Deployment <chap:design>
 This chapter provides a full description of the proposed solution. It details
 the system's design process, by discussing the different alternatives (#headref(
   <sec:study-solution>,
@@ -29,8 +29,8 @@ handling subroutines.
 
 // why @ end of cycle
 The main change with respect to CREATOR 5's execution cycle
-(@alg:creator5-execution-cycle) is that the interrupt detection--along with the
-timer and devices subroutines--, and the instruction fetch are performed at the
+(@alg:creator5-execution-cycle) is that the interrupt detection---along with the
+timer and devices subroutines---, and the instruction fetch are performed at the
 end of the cycle instead of at the beginning of it. The execution order stays
 consistent: execute, check for interrupts, and fetch next instruction; but the
 with the current approach, the simulator can infer the state after the current
@@ -67,8 +67,8 @@ behaviour is then defined by each specific ISA. The selected interrupt handler
 will implement the behaviour of each action. As stated in
 @subsec:interrupt-taxonomy, most ISAs differentiate between different interrupt
 types, therefore our model must support multiple interrupt types. Some
-ISAs--like RISC-V--also support enabling and disabling interrupts globally, that
-is, all interrupt types.
+ISAs---like RISC-V---also support enabling and disabling interrupts globally,
+that is, all interrupt types.
 
 #noindent[The set of actions in the model is the following:]
 - Generating a specific type of interrupt.
@@ -110,8 +110,8 @@ action.
 /* interrupt handler */
 
 // why? (syscall)
-One of the objectives of the interrupt feature in the simulator--as stated in
-#highlight[User Requirement XXX]--is for it to be "opt-in", that is, ensuring
+One of the objectives of the interrupt feature in the simulator---as stated in
+#highlight[User Requirement XXX]---is for it to be "opt-in", that is, ensuring
 that the average user that doesn't need to understand interrupts in order to use
 the simulator's basic functionalities. The problem arises with the system calls,
 which _must_ be implemented with interrupts, but are part of the basic example
@@ -127,13 +127,13 @@ providing a "fallback" system that is transparent for the regular users.
 
 // approaches
 There are two possible approaches to solving this: embedding a basic interrupt
-handler--written in assembly--with each program, and allowing the user to
+handler---written in assembly---with each program, and allowing the user to
 replace it; and using multiple interrupt handlers, a default one that bypasses
 the architecture-defined interrupt actions, and another that executes the
 actions, forcing the user to write their own interrupt handler. The main
 difference between the two approaches is that the latter allows writting the
 default interrupt handler in JavaScript, which in turns allows interaction with
-the system through the CREATOR API (CAPI), offering the user more flexibility
+the system through the CREATOR API (`CAPI`), offering the user more flexibility
 and ease of use. Furthermore, this approach allows switching handlers without
 needing to recompile, although this is perhaps only useful for debugging
 purposes. For the reasons mentioned, the multiple handler approach was selected.
@@ -155,8 +155,8 @@ As with interrupts, a generic timer model can be divided into a set of actions:
 
 // handling subroutine
 The timer handling subroutine, specified in @alg:creator6-timer-handler, would
-therefore advance and handle the timers once every tick--a tick being a unit of
-time composed of one or several clock cycles--if the timers are enabled.
+therefore advance and handle the timers once every tick---a tick being a unit of
+time composed of one or several clock cycles---if the timers are enabled.
 
 #algorithm(
   title: [CREATOR 6's timer handling subroutine],
@@ -177,11 +177,13 @@ time composed of one or several clock cycles--if the timers are enabled.
 As stated in @sec:soa-devices, there are two main approaches used for I/O
 communication in computers: using specific ports for communication, and using
 memory. Ports, as they require special instructions, can be emulated in the
-instruction definition with CREATOR 6's plugin system #footnote[This system is
-  out of the scope of the thesis, but it will be briefly described in
-  @sec:sys-architecture.], but for ISAs that don't offer those
-instructions--like RISC-V--, interaction with the devices the simulator offers
-can only occur through the use of MMIO.
+instruction definition with CREATOR 6's plugin system #footnote[The plugin
+  system defines custom variables and functions in order to better emulate
+  specific architectures. These can be accessed---through `CAPI`---in the
+  instruction definitions.
+], but for ISAs that don't offer those instructions---like RISC-V---,
+interaction with the devices the simulator offers can only occur through the use
+of MMIO.
 
 // device definition
 It is possible to model a "generic" device as a set of registers and a handler
@@ -221,15 +223,36 @@ executes the handler of all enabled devices once per cycle.
 
 
 == System Architecture <sec:sys-architecture>
-
 // big ol' refactor
+#highlight[As per User Requirement XXX,] the system architecture of CREATOR
+overhauled. The application was divided into three distinct modules: a _core_
+module, containing all the base functionality of the simulator, and two
+"consumer" modules, the _Command-Line Interface_ (CLI) and the _Web
+Application_. Both consumer modules are separate applications that act as the
+interface between the user and the main system's functionality (the core
+module)#footnote[Their details are out of the scope of this thesis, but they
+  will be briefly described in @sec:implementation.].
+
+// core arch
+#noindent[@fig:arch-core shows the core module architecture. Its main components
+  are the following:]
+- _Architecture Processor_: In charge of parsing the architecture configuration
+  file and initializing up the rest of components according to it.
+- _Register Manager_: Manages the registers and register operations.
+- _Memory Management_: Manages memory access and operations.
+- _Execution Engine_: Executes the loaded instuctions and the rest of operations
+  in the execution cycle, including interrupts, timers and devices.
+- _Assembler_: Assembles and links the source assembly code into a set of
+  executable instructions.
+- _Sentinel_: Monitors the execution of the program, providing feedback on
+  whether parameter passing conventions are followed.
+- _CAPI_: An API that defines functions to interact with the rest of the
+  components of the system. Includes the plugin system.
 
 #figure(
   image("/diagrams/architecture/core.svg", width: 90%),
   caption: [`core` module architecture],
 ) <fig:arch-core>
-
-// mention plugin system
 
 
 === Interrupt Manager
@@ -240,12 +263,24 @@ executes the handler of all enabled devices once per cycle.
   caption: [Interrupt Manager architecture],
 ) <fig:arch-interrupts>
 
+// interrupt manager
+
+
+// interrupt handlers
+
+
+
 === Devices
 
 #figure(
   image("/diagrams/architecture/devices.svg", width: 50%),
   caption: [Device Manager architecture],
 ) <fig:arch-devices>
+
+// device manager
+
+
+// device handlers
 
 
 === Timer Manager
@@ -257,4 +292,18 @@ executes the handler of all enabled devices once per cycle.
 
 
 
-=== CAPI
+=== `CAPI`
+
+
+
+
+== Implementation <sec:implementation>
+
+// TS, ES Modules, Vite, Bun?
+
+
+// CLI, Typescript
+
+
+
+== Deployment <sec:deployment>

@@ -53,6 +53,7 @@ This document contains the following chapters:
 - #headref(<chap:state-of-the-art>), discusses the technological environment
   surrounding interrupts, timers, and I/O devices, including its hardware
   implementation and simulation.
-- #headref(<chap:design>), details the design process and the system's
-  architecture, including all of its components.
+- #headref(<chap:design>), describes the design and implementation process,
+  detailing the system's architecture, and justifying the different decisions
+  taken. It also outlines the necessary steps for its deployment.
 - #headref(<apx:genai>), describes the use of Generative AI in this work.

@@ -95,8 +95,6 @@
 // code font
 #show raw: set text(font: "CaskaydiaCove NFM")
 
-// don't show captions on algorithm figures, as we're already including it inside
-#show figure.caption.where(kind: "algorithm"): {}
 
 
 /* Thesis */
@@ -105,7 +103,6 @@
 #include "parts/state_of_the_art.typ"
 #include "parts/analysis.typ"
 #include "parts/design.typ"
-#include "parts/implementation.typ"
 #include "parts/verification.typ"
 #include "parts/project_plan.typ"
 #include "parts/conclusions.typ"

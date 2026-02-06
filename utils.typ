@@ -31,7 +31,7 @@
 #import "@preview/lovelace:0.3.0": line-label, pseudocode-list
 
 
-/// Creates an algorithm figure, using the `lovelace` package.
+/// Creates an algorithm figure, using the `lovelace` package. These will be of kind `"algorithm"`.
 ///
 /// - body (content): Argument to be passed to `lovelace:pseudocode-list`
 /// - title (content, none): Algorithm title
@@ -43,6 +43,12 @@
   // for some reason, setting `placement` to `auto` breaks `line-label` (see
   // https://github.com/andreasKroepelin/lovelace/issues/28)
   #set figure(placement: none)
+
+  // don't show the figure caption, as we're already including it inside the
+  // figure
+  // however, we don't set caption to `none`bc we want the caption to be shown
+  // in the list of algorithms
+  #show figure.caption: {}
 
   #figure(
     box(
@@ -57,7 +63,7 @@
         numbered-title: title,
       ),
     ),
-    caption: title,
+    caption: title, // we want to show it on TOC
     kind: "algorithm",
     supplement: [Algorithm],
     placement: placement,

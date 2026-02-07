@@ -39,7 +39,7 @@
 /// - width (auto, fraction, relative): Width of the figure
 /// - placement (auto, none, alignment): Figure placement
 /// -> content
-#let algorithm(body, title: none, label: none, width: 75%, placement: auto) = [
+#let algorithm(body, title: none, label: none, width: auto, placement: auto) = [
   // for some reason, setting `placement` to `auto` breaks `line-label` (see
   // https://github.com/andreasKroepelin/lovelace/issues/28)
   #set figure(placement: none)

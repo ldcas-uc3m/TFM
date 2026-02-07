@@ -1,26 +1,27 @@
 classDiagram
     direction TB
 
-    class InterruptType {
-        <<enumeration>>
-        Software
-        Timer
-        External
-        EnvironmentCall
-        Maskable
-        NonMaskable
-    }
+    %% class InterruptType {
+    %%     <<enumeration>>
+    %%     Software
+    %%     Timer
+    %%     External
+    %%     EnvironmentCall
+    %%     Maskable
+    %%     NonMaskable
+    %% }
 
-    class InterruptStatus {
-        <<interface>>
-        + boolean globalEnabled
-        + Map~InterruptType, boolean~ enabled
-        + Map~InterruptType, boolean~ pendingInterrupts
-    }
+    %% class InterruptStatus {
+    %%     <<interface>>
+    %%     + boolean globalEnabled
+    %%     + Map~InterruptType, boolean~ enabled
+    %%     + Map~InterruptType, boolean~ pendingInterrupts
+    %% }
 
     class InterruptHandler {
         <<abstract>>
-        - ArchitectureInterrupts config
+        %% - ArchitectureInterrupts config
+        + constructor(interrupt_config)
         + enable(status, type)
         + globalEnable(status)
         + disable(status, type)
@@ -35,7 +36,8 @@ classDiagram
     }
 
     class CREATORInterruptHandler {
-        - Function syscallHandler
+        %% - Function syscallHandler
+        + constructor(syscall_handler)
         + enable(status, type)
         + disable(status, type)
         + globalDisable(status)
@@ -50,8 +52,9 @@ classDiagram
     }
 
     class ArchitectureInterruptHandler {
-        - ArchitectureInterrupts config
-        - makeInjectedFunction()
+        %% - ArchitectureInterrupts config
+        %% - makeInjectedFunction()
+        + constructor(action_implementations)
         + enable(status, type)
         + disable(status, type)
         + globalDisable(status)
@@ -68,7 +71,9 @@ classDiagram
     class InterruptManager {
         - InterruptHandler handler
         - InterruptStatus status
-        - boolean customHandlerAllowed
+        %% - boolean customHandlerAllowed
+        + constructor(handler)
+        + switchHandler(handler) InterruptManager
         + enable(type)
         + globalEnable()
         + disable(type)
@@ -80,16 +85,15 @@ classDiagram
         + isGlobalEnabled() boolean
         + clear(type)
         + handle(type)
-        + switchHandler(handlerType) InterruptManager
         + reset()
-        - syncEnabledInterrupts()
+        %% - syncEnabledInterrupts()
     }
 
     %% Relationships
     InterruptHandler <|-- CREATORInterruptHandler : extends
     InterruptHandler <|-- ArchitectureInterruptHandler : extends
     InterruptManager *-- InterruptHandler : uses
-    InterruptManager *-- InterruptStatus : maintains
-    InterruptManager ..> InterruptType : references
-    InterruptHandler ..> InterruptType : references
-    InterruptHandler ..> InterruptStatus : references
+    %% InterruptManager *-- InterruptStatus : maintains
+    %% InterruptManager ..> InterruptType : references
+    %% InterruptHandler ..> InterruptType : references
+    %% InterruptHandler ..> InterruptStatus : references

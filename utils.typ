@@ -86,7 +86,7 @@
   h(1fr)
   set text(size: .9em)
   sym.gt.tri
-  [~]
+  sym.space.nobreak
   emph(body)
 }
 
@@ -125,4 +125,16 @@
 #let noindent(body) = {
   set par(first-line-indent: 0pt)
   body
+}
+
+
+/// Creates an inline comment inside `tree-list`.
+///
+/// - body (content): Comment
+/// -> content
+#let tree-comment(body) = {
+  sym.space.nobreak
+  box(width: 1fr, repeat([.], gap: 2pt))
+  sym.space.nobreak
+  emph(body)
 }

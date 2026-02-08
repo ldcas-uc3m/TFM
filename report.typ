@@ -30,6 +30,7 @@
     // https://www.ieee.org/content/dam/ieee-org/ieee/web/org/pubs/ieee-taxonomy.pdf
     keywords: ("Computer science education", "Digital simulation"),
   ),
+  // english-abstract: (body: [], keywords: ("",)),
   acknowledgements: [#strike[Mi cuchipurruchi.] Nadie. Estoy jodidamente solo.],
   outlines: (
     // contents is compulsory
@@ -46,12 +47,16 @@
   // appendixes: [],
   // glossary: glossary-entries,
   abbreviations: (
-    // TFM: "Trabajo de Fin de Máster",
     ISA: "Instruction Set Architecture",
     UI: "User Interface",
+    GUI: "Graphical User Interface",
     CPU: "Central Processing Unit",
     "I/O": "Input/Output",
-    "MMIO": "Memory-Mapped Input/Output",
+    MMIO: "Memory-Mapped Input/Output",
+    API: "Application Programming Interface",
+    CAPI: "CREATOR API",
+    AI: "Artificial Intelligence",
+    PC: "Program Counter",
   ),
   genai-declaration: (usage: false),
 )

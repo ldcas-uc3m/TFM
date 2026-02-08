@@ -146,7 +146,7 @@ the architecture-defined interrupt actions, and another that executes the
 actions, forcing the user to write their own interrupt handler. The main
 difference between the two approaches is that the latter allows writting the
 default interrupt handler in JavaScript, which in turns allows interaction with
-the system through the CREATOR API (`CAPI`), offering the user more flexibility
+the system through the CREATOR API (CAPI), offering the user more flexibility
 and ease of use. Furthermore, this approach allows switching handlers without
 needing to recompile, although this is perhaps only useful for debugging
 purposes. For the reasons mentioned, the multiple handler approach was selected.
@@ -264,7 +264,7 @@ module)#footnote[Their details are out of the scope of this thesis, but they
 
 #figure(
   image("/diagrams/architecture/core.svg", width: 90%),
-  caption: [`core` module architecture],
+  caption: [Core module architecture],
 ) <fig:arch-core>
 
 
@@ -432,15 +432,90 @@ features described in this thesis, a new module had to be added, the
 
 
 == Implementation <sec:implementation>
+// current implementation (cagarse en tó)
+CREATOR 5 was written in HTML 5 @html5, CSS 2018 @w3c_css, and ECMAScript 2019
+@ecmascript2019#footnote[More commonly known as "JavaScript".], using the Vue.js
+2 web framework @vuejs2. Instead of using ES Modules---introduced in ECMAScript
+2015 @ecmascript2015~---the ECMAScript source code was divided into different
+logical files and concatenated before deployment. There are many shortcommings
+with this approach, specially for the developer experience. Having the code
+split in multiple unrelated files requires developers to execute a script each
+time they wanted to make a change in the source code, and developer tools such
+as linters or language servers are useless, as they don't have access to the
+rest of the files. Furthermore, all the variables declared in the top scope of
+each file were global variables, allowing accidental _shadowing_#footnote[In
+  ECMAScript and other languages, defining a variable with the same name as a
+  previously defined variable can re-define the variable, causing undefined or
+  unexpected behaviour.] and promoting accessing variables from other logical
+files directly instead of through curated interfaces. The Vue components were
+implemented inside JavaScript files instead of using Single-File
+Components---which require a bundler---, where the HTML definitions were defined
+inside JavaScript strings, requiring escaping characters, and generating an
+overall diminished developer experience.
 
-// TS, ES Modules, Vite, Bun?
+// new stuff: TS, ES Modules, Vite, Bun?
 
+// file structure
+@fig:file-structure shows the file structure of the project, in relation with
+the components described in @fig:arch-core.
 
-// CLI, Typescript
+#import "@preview/treet:1.0.0": tree-list
+#figure(
+  caption: [Project file structure],
+  kind: image, // well, _technically_...
+  box(
+    width: 90%,
+    inset: 10pt,
+    fill: luma(93%),
+    stroke: black + 1pt,
+    radius: 5pt,
+    {
+      set align(left)
+      set text(size: .9em)
+      tree-list[
+        - `src/`
+          - `core/`#tree-comment[Core module]
+            - `core.mjs`
+            - `assembler/`#tree-comment[Assembler Registry]
+            - `capi/`#tree-comment[CAPI]
+            - `events.mts`#tree-comment[Events Manager]
+            - `executor/`#tree-comment[Execution Engine]
+              - `decoder.mjs`#tree-comment[Decoder]
+              - `devices.mts`#tree-comment[Device Manager]
+              - `executor.mjs`#tree-comment[Executor]
+              - `instructionCompiler.mts`#tree-comment[Instruction Compiler]
+              - `InterruptManager.mts`#tree-comment[Interrupt Manager]
+              - `IO.mjs`#tree-comment[I/O Manager]
+              - `stats.mts`#tree-comment[Statistics Tracker]
+              - `timers.mts`#tree-comment[Timer Manager]
+            - `memory/`#tree-comment[Memory Management]
+              - `Memory.mts`#tree-comment[Main Memory]
+              - `StackTracker.mts`#tree-comment[Stack Tracker]
+            - `register/`#tree-comment[Register Manager]
+            - `sentinel/`#tree-comment[Sentinel]
+          - `utils/`#tree-comment[Utilities library]
+          - `cli/`#tree-comment[CLI module]
+          - `web/`#tree-comment[Web application module]
+        // - `public/`
+        - `architecture/`#tree-comment[Architecture definition files]
+        - `examples/`#tree-comment[Example programs]
+        - `tests/`#tree-comment[Unit tests]
+        - `scripts/`#tree-comment[Build scripts]
+        - `index.html`#tree-comment[Web application entrypoint]
+        - `package.json`#tree-comment[Project configuration]
+        - `vite.config.ts`#tree-comment[Vite configuration]
+      ]
+    },
+  ),
+) <fig:file-structure>
 
+// interrupts, timer, devices
 
 
 == Deployment <sec:deployment>
+
+// current implementation
+@terser
 
 // github actions/ pages
 

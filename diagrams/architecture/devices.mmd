@@ -8,33 +8,33 @@ classDiagram
         + readonly data: Object
         + enabled: boolean
         + memory: Memory
-        + constructor(ctrl_addr, status_addr, data_start, data_end, enabled=true)
+        + constructor(addresses, enabled=true)
         + isDeviceAddr(addr) boolean
-        + reset() void
-        + clear() void
-        + handler() void
+        + reset()
+        + clear()
+        + handler()
     }
 
-    class ConsoleDevice {
-        + handler() void
-        - write(value, type) void
-        - prepareRead(type) void
+    class Console Device {
+        + handler()
+        %% - write(value, type)
+        %% - prepareRead(type)
     }
 
-    class OSDriver {
-        + handler() void
+    class OS Driver {
+        + handler()
     }
 
-    class DeviceManager {
+    class Device Manager {
         + devices: Map~string, Device~
         + constructor(devices)
         + checkDeviceAddr(addr) string
-        + wakeDevice(id) void
-        + handleDevices() void
-        + resetDevices() void
+        + wakeDevice(id)
+        + handleDevices()
+        + resetDevices()
     }
 
     %% relationships
     Device <|-- ConsoleDevice
     Device <|-- OSDriver
-    DeviceManager "1" o-- "*" Device
+    DeviceManager  o-- Device: uses

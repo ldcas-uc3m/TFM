@@ -276,7 +276,8 @@ interrupts are globally enabled, which specific interrupt types are enabled, and
 which are pending. It also includes a reset function that clears both the
 internal state and any other handler or architecture-defined state, by calling
 the clear and enable/disable actions on the handlers---as shown in
-@alg:interrupt-manager-reset.
+@alg:interrupt-manager-reset. As mentioned before, the `handle()` method
+implements @alg:creator6-interrupt-handler.
 
 #algorithm(
   title: [Interrupt Manager resetting subroutine],
@@ -304,7 +305,7 @@ use of the internal status and the model actions in order to synchronize the
 status---as shown in @alg:interrupt-manager-sync.
 
 #figure(
-  image("/diagrams/architecture/interrupts.svg", width: 70%),
+  image("/diagrams/architecture/interrupts.svg", width: 75%),
   caption: [Interrupt Manager architecture],
 ) <fig:arch-interrupts>
 
@@ -336,30 +337,97 @@ obtains the definition of its actions from the architecture definition, and just
 executes them.
 
 
-=== Devices
-
-#figure(
-  image("/diagrams/architecture/devices.svg", width: 50%),
-  caption: [Device Manager architecture],
-) <fig:arch-devices>
-
-// device manager
-
-
-// device handlers
-
-
 === Timer Manager
+The timer manager---shown in @fig:arch-timers~---implements the set of actions
+defined in the timer model, which in turn are defined by the architecture, and
+the handler executes @alg:creator6-timer-handler.
 
 #figure(
   image("/diagrams/architecture/timers.svg", width: 35%),
-  caption: [Timer Manager architecture],
+  caption: [Timer Manager],
 ) <fig:arch-timers>
 
 
+=== Device Manager
+The Device Manager---shown in @fig:arch-devices~--- is in charge of executing
+@alg:creator6-device-handler, holding the information and handling all the
+devices defined in the architecture.
 
-=== `CAPI`
+#figure(
+  image("/diagrams/architecture/devices.svg", width: 40%),
+  caption: [Device Manager architecture],
+) <fig:arch-devices>
 
+// devices
+Devices all derive from the same abstract class, which implements common methods
+such as `isDeviceAddr()`---a method that validates if the given address belongs
+to the device---, a reset method---which clears the associated memory---and a
+clear method---which resets the control register. Each device then implements
+its own handler, and has its own associated memory. This approach makes the
+system extensible, making it easier to add new devices.
+
+// implemented devices
+The devices implemented are two: a console device that allows reading and
+writing to the UI console, and an "OS" driver to interact with the system. The
+console device reads the value from the control register and, depending on its
+value, performs the read/write operation on the specific data type, using a
+register in the data region to pass information, as shown in
+@tab:console-device-operations. The OSDriver acts similarly to the console
+device, and implements a couple of system operations shown in
+@tab:osdriver-operations: _Sbrk_, which allocates memory in the heap, and
+_Exit_, which terminates the program.
+
+#figure(
+  table(
+    columns: 3,
+    ..table-header([Control Register value], [Operation], [Data Register
+      value]),
+    [1], [Print integer], [[in] Integer value to print],
+    [2], [Print float], [[in] Float value to print],
+    [3], [Print double], [[in] Double value to print],
+    [4], [Print string], [[in] Address of the string to print],
+    [5], [Read integer], [[out] Value of the integer read],
+    [6], [Read float], [[out] Value of the float read],
+    [7], [Read double], [[out] Value of the double read],
+    [8], [Read string], [[out] Address of the string read],
+    [11], [Print char], [[in] Char value to print],
+    [12], [Read char], [[out] Value of the char read],
+  ),
+  caption: [ConsoleDevice operations],
+) <tab:console-device-operations>
+
+#figure(
+  table(
+    columns: 3,
+    ..table-header([Control Register value], [Operation], [Data Register
+      value]),
+    [9],
+    [Sbrk],
+    [[in] Size to allocate\ [out] Address of allocated memory],
+    [10], [Exit], [],
+  ),
+  caption: [OSDriver operations],
+) <tab:osdriver-operations>
+
+
+=== `CAPI.INTERRUPTS`
+As previously stated, CAPI---or CREATOR API---is an interface with the main
+system used for in the architecture definition, specially on the instructions
+and interrupt/timer actions. In order to allow interactions with the new
+features described in this thesis, a new module had to be added, the
+`CAPI.INTERRUPTS` module. This module includes the following methods:
+- _setUserMode_: Sets the user privilege mode
+- _setKernelMode_: Sets the kernel privilege mode.
+- _create_: Creates a new interrupt of the specified type.
+- _enable_: Enables the specified type of interrupts.
+- _globalEnable_: Globally enables interrupts.
+- _disable_: Disables the specified type of interrupts.
+- _globalDisable_: Globally disables interrupts.
+- _isEnabled_: Checks if interrupts of the specified type are enabled.
+- _isGlobalEnabled_: Checks if interrupts are globally enabled.
+- _clear_: Clears a pending interrupt of the specified type.
+- _globalClear_: Clears all pending interrupts.
+- _setHandler_: Sets the interrupt handler.
 
 
 

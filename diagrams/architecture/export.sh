@@ -15,7 +15,7 @@ fi
 
 # convert
 echo "Converting draw.io files..."
-docker run -it -v $(pwd):/data rlespinasse/drawio-export --format=svg --embed-diagram  --crop --remove-page-suffix --output=.
+docker run -it -v $(pwd):/data rlespinasse/drawio-export --format=svg --embed-diagram --crop --remove-page-suffix --output=.
 
 # re-export svg bc fucking drawio
 for file in *.svg; do
@@ -51,7 +51,7 @@ for file in *.mmd; do
     output_svg="${file%.mmd}.svg"
     echo "Converting $file -> $output_svg"
 
-    $RUNNER @mermaid-js/mermaid-cli -i "$file" -o "$output_pdf" -c true-neutral-style.json --pdfFit
+    $RUNNER @mermaid-js/mermaid-cli -i "$file" --configFile true-neutral-style.json --pdfFit --output "$output_pdf"
 
     # we generate in PDF and re-encode to SVG w/ inkscape bc foreignObjects
     # https://github.com/typst/typst/discussions/3090#discussioncomment-7960440

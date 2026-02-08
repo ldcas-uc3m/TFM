@@ -44,7 +44,7 @@
           </mxGeometry>
         </mxCell>
         <mxCell id="RMm-FL2JVTZzGOUxSBED-13" parent="1" style="dropTarget=0;fontFamily=Roboto;fontColor=default;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DRoboto;" value="Device&#xa;Manager" vertex="1">
-          <mxGeometry height="60" width="130" x="330" y="150" as="geometry" />
+          <mxGeometry height="60" width="130" x="480" y="150" as="geometry" />
         </mxCell>
         <mxCell id="RMm-FL2JVTZzGOUxSBED-14" parent="RMm-FL2JVTZzGOUxSBED-13" style="shape=module;jettyWidth=8;jettyHeight=4;fontFamily=Roboto;fontColor=default;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DRoboto;" value="" vertex="1">
           <mxGeometry height="20" relative="1" width="20" x="1" as="geometry">
@@ -52,7 +52,7 @@
           </mxGeometry>
         </mxCell>
         <mxCell id="RMm-FL2JVTZzGOUxSBED-15" parent="1" style="dropTarget=0;fontFamily=Roboto;fontColor=default;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DRoboto;" value="Interrupt&#xa;Manager" vertex="1">
-          <mxGeometry height="60" width="130" x="480" y="150" as="geometry" />
+          <mxGeometry height="60" width="130" x="630" y="190" as="geometry" />
         </mxCell>
         <mxCell id="RMm-FL2JVTZzGOUxSBED-16" parent="RMm-FL2JVTZzGOUxSBED-15" style="shape=module;jettyWidth=8;jettyHeight=4;fontFamily=Roboto;fontColor=default;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DRoboto;" value="" vertex="1">
           <mxGeometry height="20" relative="1" width="20" x="1" as="geometry">
@@ -107,16 +107,8 @@
             <mxPoint x="-27" y="7" as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="RMm-FL2JVTZzGOUxSBED-27" parent="1" style="dropTarget=0;fontFamily=Roboto;fontColor=default;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DRoboto;" value="I/O&#xa;Manager" vertex="1">
-          <mxGeometry height="60" width="130" x="630" y="150" as="geometry" />
-        </mxCell>
-        <mxCell id="RMm-FL2JVTZzGOUxSBED-28" parent="RMm-FL2JVTZzGOUxSBED-27" style="shape=module;jettyWidth=8;jettyHeight=4;fontFamily=Roboto;fontColor=default;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DRoboto;" value="" vertex="1">
-          <mxGeometry height="20" relative="1" width="20" x="1" as="geometry">
-            <mxPoint x="-27" y="7" as="offset" />
-          </mxGeometry>
-        </mxCell>
         <mxCell id="RMm-FL2JVTZzGOUxSBED-29" parent="1" style="dropTarget=0;fontFamily=Roboto;fontColor=default;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DRoboto;" value="Statistics&#xa;Tracker" vertex="1">
-          <mxGeometry height="60" width="130" x="630" y="230" as="geometry" />
+          <mxGeometry height="60" width="130" x="330" y="150" as="geometry" />
         </mxCell>
         <mxCell id="RMm-FL2JVTZzGOUxSBED-30" parent="RMm-FL2JVTZzGOUxSBED-29" style="shape=module;jettyWidth=8;jettyHeight=4;fontFamily=Roboto;fontColor=default;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DRoboto;" value="" vertex="1">
           <mxGeometry height="20" relative="1" width="20" x="1" as="geometry">

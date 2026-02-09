@@ -454,10 +454,31 @@ inside JavaScript strings, requiring escaping characters, and generating an
 overall diminished developer experience.
 
 // new stuff: TS, ES Modules, Vite, Bun?
+The new implementation of the project is built around the Vite build tool
+@vite~---the de facto standard for frontend tooling---, and follows modern
+conventions for project layout, both on the web application and the CLI. Most of
+CREATOR 5's code has been refactored and modified: the inclusion of ES Modules,
+the use of classes, Vue Single-File Components, and the addition of new tooling
+such as formatters and linters#footnote[Specifically, ESLint @eslint and
+  Prettier @prettier.]. All of this has lead to an improvement in reliability,
+mantainability, readability, scalability, and overall developer experience.
+Additionally, many of the files were translated into Typescript @typescript,
+which improves the robustness of the source code by adding static typing. It is
+also important to note the addition of the BigInt type, which allows us to
+implement 64-bit architectures#footnote[In ECMAScript, the `Number` type stores
+  a 64-bit floating point (double precision) number, which only allows integers
+  up to 53 bits.]. The CLI, on the other hand, is built on top of Deno @deno, a
+JavaScript runtime, due to its great integration with WebAssembly
+@wasm#footnote[CREATOR's default assembler @creatorAssembler is written in Rust,
+  and is compiled to WebAssembly in order to be executed in the web application.
+  Furthermore, Deno offers a specific target for Rust WebAssembly compilation.].
 
-// file structure
+// project layout
 @fig:file-structure shows the file structure of the project, in relation with
-the components described in @fig:arch-core.
+the components described in @sec:sys-architecture. As CREATOR is primarily a web
+application, its structure mainly follows Vite's default template for web
+applications. Nevertheless, the source code is clearly separated into the three
+main modules: core, web, and CLI.
 
 #import "@preview/treet:1.0.0": tree-list
 #figure(
@@ -477,6 +498,11 @@ the components described in @fig:arch-core.
           - `core/`#tree-comment[Core module]
             - `core.mjs`
             - `assembler/`#tree-comment[Assembler Registry]
+              - `assembler.mjs`#tree-comment[Decoder]
+              - `creatorAssembler`#tree-comment[CREATOR Assembler]
+              - `rasm`#tree-comment[RASM]
+              - `sjasmplus`#tree-comment[SJASMPlus]
+            // - `sailAssembler`#tree-comment[SAIL Assembler]
             - `capi/`#tree-comment[CAPI]
             - `events.mts`#tree-comment[Events Manager]
             - `executor/`#tree-comment[Execution Engine]
@@ -509,14 +535,60 @@ the components described in @fig:arch-core.
   ),
 ) <fig:file-structure>
 
-// interrupts, timer, devices
+// interrupts, timer, devices details
+The implementation of interrupts, timers, and MMIO closely follows the designs
+in @sec:sys-architecture, with the inclussion of TypeScript Enums and Interfaces
+in order to represent the different configurations and types. For the
+architecture-defined implementations of timers and interrupts, the `Function`
+class---a safer and more effiecient alternative to `eval()`---is used to create
+each one of the required actions, and through the use of another wrapper
+function, some extra variables are injected into the scope: `CAPI`---a reference
+to CAPI---, `status`---a view on the system's status (execution index, clock
+cycles, etc.)---, `registers`---a proxy for direct access to the registers---,
+and `InterruptType`---an Enum representing the different interrupt types.
+Finally, the `Device` class' `memory` attribute is of the same type as the main
+memory, as the implementation is generic enough.
+
+// tests
+CREATOR 5 included some simple regression tests through the use of the CLI,
+consisting of executing specific programs and comparing their outputs. The new
+unit tests use the Deno @deno test runner instead, improving reliability and
+developer experience. Some components and classes, such as Memory also include
+specific unit tests to ensure their correct functionality.
 
 
 == Deployment <sec:deployment>
+// webpage
+CREATOR, since its earlier versions, and being a simple web application, could
+be deployed on any simple web server, and it has been hosted on GitHub Pages
+@github-pages, a service that can be configured to automatically deploy the
+latest version of a webpage whose source code is hosted in its own GitHub
+repository @CREATORgithub. In order to reduce the size of the ECMAScript code,
+the Terser library @terser was used in the building pipeline. With the addition
+of Vite, this pipeline is simplified, and produces better results due to the
+fact that it also reduces the size of the HTML and CSS, while pruning unused
+code.
 
-// current implementation
-@terser
+// CLI, CI
+As the CLI is built on top of Deno, it is possible to generate executables for
+all the platforms Deno supports: Windows (x86 and ARM architectures), Linux (x86
+and ARM architectures), and MacOS (ARM). These executables are built when a new
+version is released, and published to the GitHub repository's "Releases" page.
+To reduce the executable's size, only the specific core and CLI dependencies are
+included.
 
-// github actions/ pages
-
-// ESP-32 & docker, remote lab?
+// specs
+The technical specifications recommended for the final user to obtain the best
+experience from the application are:
+- Operating System: Ubuntu 24.04 LTS (Linux distribution) / Windows 11 / MacOS
+  Tahoe.
+- Processor: Intel® CoreTM i3 CPU 6300 #sym.at 3.8GHz or higher.
+- Random Access Memory (RAM): 2GB or higher.
+- Storage: 100MB or free space or higher.
+- Network: An Internet connection is required in order for others to access the
+  web application, although it can be accessed locally. For deploying the web
+  application, an Internet connection is required to download the dependencies.
+- Software:
+  - Chrome 145 / Safari 26.0 / Firefox 247.0 (Web application).
+  - A Node.js @nodejs compatible package manager is required for installing the
+    dependencies in order to deploy the web application.

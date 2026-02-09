@@ -50,6 +50,7 @@
     ISA: "Instruction Set Architecture",
     UI: "User Interface",
     GUI: "Graphical User Interface",
+    CLI: "Command Line Interface",
     CPU: "Central Processing Unit",
     "I/O": "Input/Output",
     MMIO: "Memory-Mapped Input/Output",

@@ -36,7 +36,6 @@
     // contents is compulsory
     figures: true,
     tables: true,
-    listings: false,
     custom: (
       outline(
         title: [List of algorithms],
@@ -58,6 +57,7 @@
     CAPI: "CREATOR API",
     AI: "Artificial Intelligence",
     PC: "Program Counter",
+    FOSS: "Free Open-Source Software",
   ),
   genai-declaration: (usage: false),
 )

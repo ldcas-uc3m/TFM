@@ -179,26 +179,26 @@ control of interrupts, allowing the programmer to set which types of interrupts
 are enabled: field `MSIE` (_Machine Software Interrupt Enable_), `MTIE`
 (_Machine Timer Interrupt Enable_), and `MEIE` (_Machine External Interrupt
 Enable_) control software, timer, and external interrupts, respectively. The
-`mip` (_Machine Interrupt Pending_) register (@fig:mip) indicates the
-interrrupts that are currently pending. Similarly to register `mie`, it
-specifies the type of interrupt on specific fields: `MSIP` (_Machine Software
-Interrupt Pending_), `MTIP` (_Machine Timer Interrupt Pending_), and `MEIP`
-(_Machine External Interrupt Pending_). Each of these fields may be writable or
-may be read-only. Register `mcause` (_Machine Cause_, @fig:mcause) provides
-information about the event that caused the trap. This register contains a field
-`I` specifying if the cause was an interrupt or an exception, while the rest of
-the bits are reserved for the exception code. RISC-V defines some of these
-exception codes (see @tab:rv32-excodes), while others are left for the
-implementation to use. Register `mtvec` (_Machine Trap-Vector Base-Address_,
-@fig:mtvec) holds the trap vector configuration. Depending on the value of the
-`MODE` field, RISC-V allows for polled interrupts (_direct mode_, with a value
-of `0`) or vectored interrupts (_vectored mode_, with a value of `1`). In direct
-mode, all traps cause the PC to be set to the address in the `BASE` field, while
-on vectored mode, traps set the PC to address
-$mono("BASE") + 4 times italic("cause")$, _cause_ being the exception code found
-in `mcause`. Finally, register `mepc` (_Machine Exception Program Counter_)
-holds the address of the instruction that generated the exception while it is
-handled @RISCVUnprivileged[chap. 3.1] @Bulić2024[chap. 2.5.2].
+`mip` (_Machine Interrupt Pending_) register (@fig:mip) indicates the interrupts
+that are currently pending. Similarly to register `mie`, it specifies the type
+of interrupt on specific fields: `MSIP` (_Machine Software Interrupt Pending_),
+`MTIP` (_Machine Timer Interrupt Pending_), and `MEIP` (_Machine External
+Interrupt Pending_). Each of these fields may be writable or may be read-only.
+Register `mcause` (_Machine Cause_, @fig:mcause) provides information about the
+event that caused the trap. This register contains a field `I` specifying if the
+cause was an interrupt or an exception, while the rest of the bits are reserved
+for the exception code. RISC-V defines some of these exception codes (see
+@tab:rv32-excodes), while others are left for the implementation to use.
+Register `mtvec` (_Machine Trap-Vector Base-Address_, @fig:mtvec) holds the trap
+vector configuration. Depending on the value of the `MODE` field, RISC-V allows
+for polled interrupts (_direct mode_, with a value of `0`) or vectored
+interrupts (_vectored mode_, with a value of `1`). In direct mode, all traps
+cause the PC to be set to the address in the `BASE` field, while on vectored
+mode, traps set the PC to address $mono("BASE") + 4 times italic("cause")$,
+_cause_ being the exception code found in `mcause`. Finally, register `mepc`
+(_Machine Exception Program Counter_) holds the address of the instruction that
+generated the exception while it is handled @RISCVUnprivileged[chap. 3.1]
+@Bulić2024[chap. 2.5.2].
 
 #csr-figure("mcause")
 #csr-figure("mtvec")

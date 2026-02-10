@@ -3,8 +3,6 @@
 
 
 
-
-
 = Project Plan <chap:project-plan>
 This chapter presents an overview of the development and logistics of the
 project. The planning of the project (#headref(<sec:budget>)) is detailed,
@@ -74,18 +72,19 @@ The time estimation of the project was designed with the use of a Gantt chart
 @clark1922gantt. This diagram---shown in @fig:gantt~---displays all the
 performed tasks in each iteration of the life cycle, plus an extra documentation
 task in each iteration for the drafting of this thesis. A final _Report_ task
-was added to represent the time spent finishing this report.
+was added to represent the time spent finishing this and other required reports.
 
 The project had a total duration of 13 months, with a personal dedication of 25
 hours per week, totaling $#total-hours h$.
 
-#figure(
+#big-ass-table(
+  label: <fig:gantt>,
   caption: [Gantt chart for the project],
   {
     import "/diagrams/gantt/gantt.typ": diagram as gantt-chart
     gantt-chart
   },
-) <fig:gantt>
+)
 
 
 
@@ -107,8 +106,8 @@ characteristics of the project, including the total budget.
     [*Department*],
     [Departamento de Informática.\ Universidad Carlos III de Madrid.],
 
-    [*Start date*], [5th of November of 2024],
-    [*End date*], [31st of December of 2025],
+    [*Start date*], [November 5th, 2024],
+    [*End date*], [December 31st, 2025],
     [*Duration*], [13 months],
     [*Total budget*], money(total-costs),
   ),
@@ -346,5 +345,6 @@ The source code is available at https://github.com/creatorsim/creator/.
 
 
 == Socio-economic environment <sec:environment>
+
 
 === Sustainable Development Goals

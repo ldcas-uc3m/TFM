@@ -19,19 +19,39 @@
   double-sided: true,
   flyleaf: true,
   bibliography-content: bibliography("references.bib", style: "ieee"),
+
   epigraph: (
     quote: [`git commit -m "minor updates"`],
     author: "Alejandro Calderón",
     // source: "",
   ),
+
   abstract: (
     body: [Major updates.],
     // see
     // https://www.ieee.org/content/dam/ieee-org/ieee/web/org/pubs/ieee-taxonomy.pdf
-    keywords: ("Computer science education", "Digital simulation"),
+    keywords: (
+      "Computer science education",
+      "Digital simulation",
+      "Interrupts",
+      "I/O",
+    ),
   ),
+
   // english-abstract: (body: [], keywords: ("",)),
-  acknowledgements: [#strike[Mi cuchipurruchi.] Nadie. Estoy jodidamente solo.],
+  acknowledgements: [
+    #strike[Mi cuchipurruchi.] Nadie. Estoy jodidamente solo.
+    // amigos y familia (no hay novia esta vez)
+
+    // colegas del proyecto: Alex, Félix, Jorge, Diego, Elisa, Juan Carlos?
+
+    // GUL
+
+    // colegas de carrera (brothers in arms) y profes
+
+    // comunidad software libre
+  ],
+
   outlines: (
     // contents is compulsory
     figures: true,
@@ -43,8 +63,10 @@
       ),
     ),
   ),
+
   // appendixes: [],
   // glossary: glossary-entries,
+
   abbreviations: (
     ISA: "Instruction Set Architecture",
     UI: "User Interface",
@@ -56,7 +78,9 @@
     API: "Application Programming Interface",
     CAPI: "CREATOR API",
     AI: "Artificial Intelligence",
+    IoT: "Internet of Things",
     PC: "Program Counter",
+    GPU: "Graphics Processing Unit",
     FOSS: "Free Open-Source Software",
   ),
   genai-declaration: (usage: false),

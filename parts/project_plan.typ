@@ -8,11 +8,7 @@ This chapter presents an overview of the development and logistics of the
 project. The planning of the project (#headref(<sec:budget>)) is detailed,
 analyzing its budget and overall cost (#headref(<sec:budget>)). Furthermore, it
 analyzes the different legislation and regulations that may apply to the project
-(#headref(<sec:regulation>)), and discusses the socio-economic environment in
-which it was carried out, including the Sustainable Development Goals @sdg-un
-(#headref(
-  <sec:environment>,
-)).
+(#headref(<sec:regulation>)).
 
 
 
@@ -340,11 +336,5 @@ CREATOR is licensed under the LGPL-2.1 license @lgpl21, in order to allow free
 use and modification of the source code. All of its dependencies are license
 through compatible licenses, such as the MIT license @mitlicense (e.g. Vue.js).
 
-The source code is available at https://github.com/creatorsim/creator/.
-
-
-
-== Socio-economic environment <sec:environment>
-
-
-=== Sustainable Development Goals
+#noindent[The source code for this project is publicly available at
+  https://github.com/creatorsim/creator/.]

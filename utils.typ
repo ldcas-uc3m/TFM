@@ -1,7 +1,8 @@
 //! Auxiliar helper macros
 // LTeX: enabled=false
 
-#import "/uc3m-thesis-ieee-typst/arguments.typ": format-value
+#import "@preview/oxifmt:1.0.0": strfmt
+
 
 /// Auxiliar table.header
 #let table-header(..children, repeat: true) = {
@@ -96,7 +97,12 @@
 /// - label (label): Heading label
 /// -> content
 #let headref(label) = context {
-  let el = query(label).first()
+  let label-ref = query(label)
+  assert(
+    label-ref.len() != 0,
+    message: strfmt("Label '{}' not found!", label),
+  )
+  let el = label-ref.first()
   assert(el.func() == heading, message: "Label must reference a heading")
 
   ref(label)
@@ -139,8 +145,6 @@
   emph(body)
 }
 
-
-#import "@preview/oxifmt:1.0.0": strfmt
 
 /// Formats the specified quantity as a two-digit number
 #let round = calc.round.with(digits: 2)

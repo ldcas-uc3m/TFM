@@ -14,8 +14,11 @@
 
 
 = State of the Art <chap:state-of-the-art>
-// TODO: blah blah blah
-// #secref(<sec:>)
+This chapter presents the current stage of the technologies implemented in this
+project: interrupts (#headref(<sec:soa-interrupt>)), timers (#headref(
+  <sec:soa-timer>,
+), and memory-mapped I/O (#headref(<sec:soa-mmio>), including how they are
+implemented in different ISAs and simulators.
 
 
 == Interrupts <sec:soa-interrupt>
@@ -454,7 +457,7 @@ in `RT1`, and performs the interrupt hook (@alg:wepsim-hook). Upon receiving the
 
 
 
-== Timers
+== Timers <sec:soa-timer>
 // why not software timers
 Most computer applications require some a way to measure time intervals, either
 for scheduling tasks, polling for user inputs, or correctly implementing
@@ -581,7 +584,7 @@ gates to implement @Bulić2024[chap. 1.3--1.5].
 
 
 === I/O implementation and simulation <sec:devices-impl>
-// TODO: blah blah
+Different ISAs implement devices in different ways. // TODO: expand
 
 ==== Devices in RISC-V
 RISC-V implements _Memory-Mapped I/O_ (MMIO). In particular, the specification

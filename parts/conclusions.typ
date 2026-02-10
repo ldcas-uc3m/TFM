@@ -1,4 +1,7 @@
-= Conclusions
+#import "/utils.typ": *
+
+
+= Conclusions <chap:conclusions>
 
 
 == Project conclusions

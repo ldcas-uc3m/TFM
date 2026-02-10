@@ -61,4 +61,11 @@ This document contains the following chapters:
 - #headref(<chap:design>), describes the design and implementation process,
   detailing the system's architecture, and justifying the different decisions
   taken. It also outlines the necessary steps for its deployment.
+// - #headref(<chap:evaluation>),
+- #headref(<chap:project-plan>), presents the concepts related to the followed
+  planning, and breaks down all project costs. It also discusses the regulatory
+  framework and socio-economic environment that applies to the project.
+- #headref(<chap:conclusions>), highlights the contributions of the project,
+  discusses the overall conclusions, and presents what future work could be done
+  in order to improve the system.
 - #headref(<apx:genai>), describes the use of Generative AI in this work.

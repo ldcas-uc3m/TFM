@@ -1,10 +1,11 @@
 #import "/utils.typ": *
-#import "costs.typ": *
-#import "@preview/oxifmt:1.0.0": strfmt
+#import "/costs.typ": *
 
 
 
-= Project Plan
+
+
+= Project Plan <chap:project-plan>
 This chapter presents an overview of the development and logistics of the
 project. The planning of the project (#headref(<sec:budget>)) is detailed,
 analyzing its budget and overall cost (#headref(<sec:budget>)). Furthermore, it
@@ -26,20 +27,20 @@ methodology and detailing the duration of each part.
 Due to the characteristics of the design, the development process was divided
 into four iterations:
 #[
-  // TODO
   #set enum(numbering: "I.")
-  + *dfd*.
-  + *Interrupts*.
-  + *Timers*.
-  + *Memory-mapped I/O*.
+  + *Refactor*. This iteration's goal is to overhaul the whole project, in order
+    to make it more maintainable and suitable for developing and feature
+    addition. This was the longest and hardest phase, but it removed many
+    blockers and allowed for the next phases to be quickly implemented.
+  + *Interrupts*. In this phase, the interrupt feature was implemented,
+    including the Interrupt Manager and the associated changes in modules such
+    as the Assembler.
+  + *Timers*. This iteration consists on implementing the Timer Manager on top
+    of the previously implemented interrupts.
+  + *Memory-mapped I/O*. The final iteration involved MMIO, the Device Manager,
+    and validating the final product, seing the three new features working
+    together.
 ]
-
-// \begin{enumerate}[label=\Roman*.]
-//   \item \textbf{\Gls{memory} and \Gls{register} File}. This iteration's goal was to implement the \reqref{Text Memory}, \reqref{Data Memory}, and \reqref{Register File} components separately.
-//   \item \textbf{Control Unit and \gls{ALU}}. This phase consists on implementing the \reqref{Control Unit} and \reqref{ALU} components, and connecting them to all the previous components. The goal of this iteration is to be able to simulate the full \gls{CPU} and \gls{memory}, and interpret LUISP-DA instructions.
-//   \item \textbf{Compiler}. This iteration consists on implementing the \reqref{Compiler} component, with the purpose of being able to load \glspl{ISA} and interpret full programs.
-//   \item \textbf{\gls{CLI}}. The final iteration implements the \reqref{CLI} component, adding features such as the \gls{REPL environment} and the whole \gls{UI}.
-// \end{enumerate}
 
 An iterative methodology was chosen, based on Bohem's spiral model
 @BohemBSpiral, in order to ensure that, before implementing a component, all
@@ -76,7 +77,7 @@ task in each iteration for the drafting of this thesis. A final _Report_ task
 was added to represent the time spent finishing this report.
 
 The project had a total duration of 13 months, with a personal dedication of 25
-hours per week, totaling $1300 h$.
+hours per week, totaling $#total-hours h$.
 
 #figure(
   caption: [Gantt chart for the project],
@@ -109,7 +110,7 @@ characteristics of the project, including the total budget.
     [*Start date*], [5th of November of 2024],
     [*End date*], [31st of December of 2025],
     [*Duration*], [13 months],
-    [*Total budget*], $#round(total-costs) euro$,
+    [*Total budget*], money(total-costs),
   ),
 ) <tab:project-info>
 
@@ -147,16 +148,16 @@ total personnel costs.
         p.role,
         $#p.hours h$,
         $#p.cph euro"/"h$,
-        $#round(p.total) euro$,
+        money(p.total),
       )
     },
 
     table.hline(),
 
     [*TOTAL*],
-    $#personnel-costs.map(p => p.hours).sum() h$,
+    $#round(personnel-costs.map(p => p.hours).sum()) h$,
     [],
-    [*$#round(total-personnel-costs) euro$*],
+    strong(money(total-personnel-costs)),
   ),
 ) <tab:personnel-cost>
 
@@ -194,22 +195,22 @@ cost, $C$, for each item is calculated using @eq:chargeable-cost, where:
     ..for i in equipment-costs {
       (
         i.item,
-        $#i.c euro$,
+        money(i.c),
         $#{ i.u * 100 } %$,
         $#i.d #{ "month" + if i.d > 1 { "s" } else { "" } }$,
         $#i.D #{ "month" + if i.D > 1 { "s" } else { "" } }$,
-        $#round(i.C) euro$,
+        money(i.C),
       )
     },
 
     table.hline(),
 
     [*TOTAL*],
-    [#equipment-costs.map(i => i.c).sum() #sym.euro],
+    money(equipment-costs.map(i => i.c).sum()),
     [],
     [],
     [],
-    [*#round(total-equipment-costs) #sym.euro*],
+    strong(money(total-equipment-costs)),
   ),
 ) <tab:equipment-cost>
 
@@ -219,11 +220,10 @@ Indirect costs are those that are present during the development process, but
 cannot be assigned directly to any product. For the energy consumption, it is
 assumed that the laptop's energy usage averages $80W$, and the monitor and mouse
 average $20W$, and that they were used during the whole development process,
-totaling $360h$. Therefore, the total energy consumed is
-$100 W dot 360 h = 3600 W h$. The internet plan includes a 600mb optic fiber
-connection, $31.80 euro"/""month"$, which is shared between three people, two of
-them not included in the project, therefore the cost applicable to the project
-is a third of that.
+totaling $1300h$. The internet plan includes a 600mb optic fiber connection,
+$31.80 euro"/""month"$, which is shared between three people, two of them not
+included in the project, therefore the cost applicable to the project is a third
+of that.
 
 @tab:indirect-cost shows the indirect costs associated to this project.
 
@@ -239,7 +239,7 @@ is a third of that.
         r.resource,
         $#r.count #r.unit$,
         $#r.cpu euro"/"#r.unit$,
-        $#round(r.total) euro$,
+        money(r.total),
       )
     },
 
@@ -248,7 +248,7 @@ is a third of that.
     [*TOTAL*],
     [],
     [],
-    [*$#round(total-indirect-costs) euro$*],
+    strong(money(total-indirect-costs)),
   ),
 ) <tab:indirect-cost>
 
@@ -262,11 +262,11 @@ is a third of that.
   table(
     columns: (3cm, 3cm),
     align: (left, right),
-    [Personnel], $#round(total-personnel-costs) euro$,
-    [Equipment], $#round(total-equipment-costs) euro$,
-    [Indirect], $#round(total-indirect-costs) euro$,
+    [Personnel], money(total-personnel-costs),
+    [Equipment], money(total-equipment-costs),
+    [Indirect], money(total-indirect-costs),
     table.hline(),
-    [*TOTAL*], [*$round(#total-costs) euro$*],
+    [*TOTAL*], strong(money(total-costs)),
   ),
 ) <tab:cost-summary>
 
@@ -275,7 +275,7 @@ is a third of that.
 @tab:offer-proposal details an offer proposal for the project. This proposal
 includes the estimated risks, expected benefits, and taxes. After applying all
 these concepts, the final cost of this project, in case it is presented to a
-third-party client, is *$#round(total-offer) euro$*.
+third-party client, is #strong(money(total-offer)).
 
 #figure(
   caption: [Offer proposal],
@@ -289,8 +289,8 @@ third-party client, is *$#round(total-offer) euro$*.
       (
         item.name,
         if i == 0 [--] else { $#{ item.inc * 100 } %$ },
-        if i == 0 [--] else { $round(item.partial) %$ },
-        $#round(item.agg) euro$,
+        if i == 0 [--] else { $money(item.partial) %$ },
+        money(item.agg),
       )
     },
 
@@ -299,19 +299,49 @@ third-party client, is *$#round(total-offer) euro$*.
     [*TOTAL*],
     $#round(total-offer * 100 / total-costs) %$,
     [],
-    [*$#round(total-offer) euro$*],
+    strong(money(total-offer)),
   ),
 ) <tab:offer-proposal>
 
 
 
 == Regulatory framework <sec:regulation>
+This section details and discusses the different regulation that may apply to
+the project.
+
 
 === Applicable legislation
+The software can be executed locally or accessed through a public website, and
+it does transmit some usage information through Google Analytics
+@googleanalytics. As the server is treating data of citizens of the European
+Union, the EU's General Data Protection Regulation @GDPR applies here; however,
+as the data collected does not concern an identified or identifiable natural
+person, there are no problems collecting that information. The software is also
+used for educational purposes, meaning there are no risks involved in the
+execution of the software and no other regulatory compliance is required.
+
 
 === Technical standards
+The software makes use of six technical standards:
+- HTML 5 @html5, the latest version of the standard used to structure the web
+  application and its content.
+- CSS 2025 @css2025, used to control the layout, colors, and overall look of the
+  web application's user interface.
+- ECMAScript 2025 @ecmascript2025, the official standard for JavaScript, and
+  Typescript @typescript, in which the source code for most of the application
+  is written.
+- YAML @yamlspec, which is used to store the ISA definition files and other
+  configurable data in a format that is easy for humans to read.
+- ISO/IEC 21778:2017 @ISO21778, the standard for the JSON data format, used in
+  some of the configuration files to store and share data.
+
 
 === Licenses
+CREATOR is licensed under the LGPL-2.1 license @lgpl21, in order to allow free
+use and modification of the source code. All of its dependencies are license
+through compatible licenses, such as the MIT license @mitlicense (e.g. Vue.js).
+
+The source code is available at https://github.com/creatorsim/creator/.
 
 
 

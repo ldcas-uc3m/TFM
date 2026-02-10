@@ -138,3 +138,21 @@
   sym.space.nobreak
   emph(body)
 }
+
+
+#import "@preview/oxifmt:1.0.0": strfmt
+
+/// Formats the specified quantity as a two-digit number
+#let round = calc.round.with(digits: 2)
+
+/// Formats the specified value as money.
+/// - value (int | float): Value to format
+/// -> content
+#let money(value) = {
+  $#strfmt(
+    "{:.2}",
+    float(value),
+    fmt-decimal-separator: ",",
+    fmt-thousands-separator: ".",
+  ) euro$
+}

@@ -433,7 +433,7 @@ features described in this thesis, a new module had to be added, the
 
 == Implementation <sec:implementation>
 // current implementation (cagarse en tó)
-CREATOR 5 was written in HTML 5 @html5, CSS 2018 @w3c_css, and ECMAScript 2019
+CREATOR 5 was written in HTML 5 @html5, CSS 2018 @css2018, and ECMAScript 2019
 @ecmascript2019#footnote[More commonly known as "JavaScript".], using the Vue.js
 2 web framework @vuejs2. Instead of using ES Modules---introduced in ECMAScript
 2015 @ecmascript2015~---the ECMAScript source code was divided into different
@@ -460,18 +460,20 @@ conventions for project layout, both on the web application and the CLI. Most of
 CREATOR 5's code has been refactored and modified: the inclusion of ES Modules,
 the use of classes, Vue Single-File Components, and the addition of new tooling
 such as formatters and linters#footnote[Specifically, ESLint @eslint and
-  Prettier @prettier.]. All of this has lead to an improvement in reliability,
-mantainability, readability, scalability, and overall developer experience.
-Additionally, many of the files were translated into Typescript @typescript,
-which improves the robustness of the source code by adding static typing. It is
-also important to note the addition of the BigInt type, which allows us to
-implement 64-bit architectures#footnote[In ECMAScript, the `Number` type stores
-  a 64-bit floating point (double precision) number, which only allows integers
-  up to 53 bits.]. The CLI, on the other hand, is built on top of Deno @deno, a
-JavaScript runtime, due to its great integration with WebAssembly
-@wasm#footnote[CREATOR's default assembler @creatorAssembler is written in Rust,
-  and is compiled to WebAssembly in order to be executed in the web application.
-  Furthermore, Deno offers a specific target for Rust WebAssembly compilation.].
+  Prettier @prettier.]. The main dependencies and standards were also upgraded:
+Vue.js 3, CSS 2025, and ECMAScript 2025, among others. All of this has lead to
+an improvement in reliability, mantainability, readability, scalability, and
+overall developer experience. Additionally, many of the files were translated
+into Typescript @typescript, which improves the robustness of the source code by
+adding static typing. It is also important to note the addition of the BigInt
+type, which allows us to implement 64-bit architectures#footnote[In ECMAScript,
+  the `Number` type stores a 64-bit floating point (double precision) number,
+  which only allows integers up to 53 bits.]. The CLI, on the other hand, is
+built on top of Deno @deno, a JavaScript runtime, due to its great integration
+with WebAssembly @wasm#footnote[CREATOR's default assembler @creatorAssembler is
+  written in Rust, and is compiled to WebAssembly in order to be executed in the
+  web application. Furthermore, Deno offers a specific target for Rust
+  WebAssembly compilation.].
 
 // project layout
 @fig:file-structure shows the file structure of the project, in relation with

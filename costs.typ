@@ -1,26 +1,24 @@
 /// Costs computations for the project plan
 
 
-#let round = calc.round.with(digits: 2)
+#let total-hours = 25 * 4 * 13
 
 
-// TODO
 /// Personnel costs:
 /// - `role`: Role
 /// - `hours`: Number of hours
 /// - `cph`: Cost per hour
 /// - `total`: Total cost
 #let personnel-costs = (
-  (role: [Project manager], hours: 1.5, cph: 65),
-  (role: [Analyst], hours: 1.5, cph: 35),
-  (role: [Programmer], hours: 1.5, cph: 30),
-  (role: [Tester], hours: 1.5, cph: 20),
+  (role: [Project manager], hours: 5 * 4 * 13, cph: 20),
+  (role: [Analyst], hours: 400, cph: 15),
+  (role: [Programmer], hours: 700, cph: 10),
+  (role: [Tester], hours: 200, cph: 12),
 ).map(p => (..p, total: p.hours * p.cph)) // compute totals
 
 #let total-personnel-costs = personnel-costs.map(p => p.total).sum()
 
 
-// TODO
 /// Equipment costs:
 /// - `item`: Item name
 /// - `c`: Cost
@@ -29,12 +27,15 @@
 /// - `D`: Depreciation
 /// - `C`: Chargeable cost
 #let equipment-costs = (
-  (item: [Laptop], c: 1, u: 1, d: 1, D: 1),
+  (item: [Laptop], c: total-hours, u: .7, d: 13, D: 7 * 12),
+  (item: [Monitor], c: 149.99, u: 1, d: 13, D: 8 * 12),
+  (item: [Video cable], c: 7.99, u: .3, d: 13, D: 3 * 12),
+  (item: [Software], c: 0, u: .4, d: 13, D: 10 * 12),
 ).map(i => (..i, C: i.c * i.u * i.d / i.D)) // compute chargeable cost
 
 #let total-equipment-costs = equipment-costs.map(i => i.C).sum()
 
-// TODO
+
 /// Indirect costs
 /// - `resource`: Resource name
 /// - `unit`: Resource measuring unit
@@ -42,7 +43,14 @@
 /// - `cpu`: Cost per unit
 /// - `total`: Total cost
 #let indirect-costs = (
-  (resource: [Project manager], unit: $k W h$, count: 1.5, cpu: 65),
+  (
+    resource: [Electricity],
+    unit: $k W h$,
+    count: ((80 + 20) * total-hours) / 1000,
+    cpu: .1282,
+  ),
+  (resource: [Internet], unit: $"month"$, count: 13, cpu: 11.69),
+  (resource: [Transportation], unit: $"month"$, count: 13, cpu: 10),
 ).map(r => (..r, total: r.count * r.cpu)) // compute totals
 
 #let total-indirect-costs = indirect-costs.map(r => r.total).sum()

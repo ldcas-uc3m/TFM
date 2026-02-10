@@ -109,7 +109,7 @@
 #include "parts/state_of_the_art.typ"
 #include "parts/analysis.typ"
 #include "parts/design.typ"
-#include "parts/verification.typ"
+// #include "parts/verification.typ" // no dio tiempo
 #include "parts/project_plan.typ"
 #include "parts/conclusions.typ"
 

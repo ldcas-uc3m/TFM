@@ -4,3 +4,6 @@
 [submodule "diagrams/rivet-typst"]
 	path = diagrams/rv32/rivet-typst
 	url = https://git.kb28.ch/rajayonin/rivet-typst.git
+[submodule "requirements/srs-typst"]
+	path = requirements/srs-typst
+	url = https://github.com/rajayonin/srs-typst.git

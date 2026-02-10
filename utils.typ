@@ -189,3 +189,13 @@
     ),
   ),
 )
+
+
+/// Places a bunch of figures "right here" (`placement: none`).
+///
+/// - body (content): Body containing figures
+/// -> content
+#let right-here(body) = {
+  set figure(placement: none)
+  body
+}

@@ -22,7 +22,7 @@ Universidad Carlos III de Madrid
 
 Install [Typst](https://github.com/typst/typst?tab=readme-ov-file#installation) and run:
 ```
-typst c main.typ
+typst c main.typ --pdf-standard=a-4
 ```
 
 > [!TIP]

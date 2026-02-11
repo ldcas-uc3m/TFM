@@ -66,7 +66,8 @@ for interrupts, timers, and I/O devices, while keeping a generic approach that
 is flexible enough for defining multiple ISAs, and without defeating its
 educational purposes.
 
-The secondary objectives, derived from the main objective, are as follows:
+#noindent[The secondary objectives, derived from the main objective, are as
+  follows:]
 - *O1:* Simulate interrupts in a generic way, allowing the emulation of multiple
   ISAs.
 - *O2:* Simulate a generic timer that can generate interrupts according to the

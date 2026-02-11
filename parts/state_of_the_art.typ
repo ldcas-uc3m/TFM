@@ -584,7 +584,9 @@ gates to implement @Bulić2024[chap. 1.3--1.5].
 
 
 === I/O implementation and simulation <sec:devices-impl>
-Different ISAs implement devices in different ways. // TODO: expand
+Different ISAs implement devices in different ways. Understanding these
+differences is essential for building robust simulators that can mimic the
+complex characteristics of real-world hardware.
 
 ==== Devices in RISC-V
 RISC-V implements _Memory-Mapped I/O_ (MMIO). In particular, the specification

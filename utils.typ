@@ -3,6 +3,8 @@
 
 #import "@preview/oxifmt:1.0.0": strfmt
 
+#import "@preview/metalogo:1.2.0": LaTeX, TeX
+
 
 /// Auxiliar table.header
 #let table-header(..children, repeat: true) = {

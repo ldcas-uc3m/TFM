@@ -66,13 +66,13 @@ for interrupts, timers, and I/O devices, while keeping a generic approach that
 is flexible enough for defining multiple ISAs, and without defeating its
 educational purposes.
 
-// TODO: finish
 The secondary objectives, derived from the main objective, are as follows:
 - *O1:* Simulate interrupts in a generic way, allowing the emulation of multiple
   ISAs.
 - *O2:* Simulate a generic timer that can generate interrupts according to the
   ISA specification.
-- *O3:* Simulate Memory-mapped I/O devices
+- *O3:* Simulate memory-mapped I/O devices that allow for different new
+  features.
 - *O4:* Integrate these new features in a modular simulator that is easy to
   maintain and expand.
 // - *O5:* Keep a didactic approach, making the simulator accessible and easy to

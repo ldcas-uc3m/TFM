@@ -37,13 +37,14 @@ Moreover, the requirement specification must be:
   the user needs.
 - *Modifiable:* The structure of the specification allows changes to the
   requirements in a simple, complete and consistent way.
-- *Ranked based on importance and stability:* Every requirement must indicate
-  its importance and its stability.
+- *Ranked based on importance:* Every requirement must indicate its importance.
+// and its stability.
 - *Traceable:* The origin of every requirement is clear, and it can be easily
   referenced in further stages.
 - *Unambiguous:* Every requirement has a single interpretation.
-- *Verifiable:* Every requirement must be verifiable, that is, there exists some
-  process to verify that the software complies with every single requirement.
+// - *Verifiable:* Every requirement must be verifiable, that is, there exists
+// some process to verify that the software complies with every single
+// requirement.  // #LOL
 
 Starting from the user requirements (@sec:reqs-user), which constitute an
 informal reference to the product the client expects, the software requirements
@@ -57,7 +58,7 @@ This section provides a detailed description of the user's requirements for the
 project. These requirements indicate the main functionality and restrictions the
 developed system must fulfill. The user requirements are divided into two
 distinct types:
-- *Capacities:* Describe the expected system's functionality.
+- *Capabilities:* Describe the expected system's functionality.
 - *Restrictions:* Impose constraints or conditions that the system must fulfill.
 
 Each user requirement is uniquely identified by an ID, which follows the format
@@ -69,6 +70,7 @@ the description of each attribute.
 
 #right-here({
   show-template(("R", "U"), "RU-template")
+  show-items(("R", "U", "CA"))
   show-items(("R", "U", "RE"))
 })
 // @srs:R-U-RE-user-req
@@ -93,7 +95,8 @@ provides the template used for the specification of the requirements, including
 the description of each attribute.
 
 #right-here({
-  show-template(("R", "S"), "RS-template")
+  show-template(("R", "S"), "RS-template") // FIXME: "Origins" is not shown bc it's not a terminal class... https://github.com/rajayonin/srs-typst/issues/3
+  show-items(("R", "S", "FN"))
   show-items(("R", "S", "NF"))
 })
 // @srs:R-S-NF-cool-req
@@ -101,12 +104,17 @@ the description of each attribute.
 
 === Traceability <sec:reqs-traceability>
 A traceability matrix verifies if software requirements cover all user
-requirements. All functional requirements cover the capabilities
-(@srs:R-S-FN-traceability) and all non-functional requirements cover the
-restrictions (@srs:R-S-NF-traceability), proving the analysis was correct.
+requirements and, as @srs:R-S-FN-traceability shows, all functional requirements
+cover the capabilities, proving the analysis was correct.
+// and all non-functional requirements cover the
+// restrictions (@srs:R-S-NF-traceability),
 
-#right-here({
+#big-ass-thing({
+  set text(size: 10pt) // ugly hack, as it also affects the caption
   show-traceability(("R", "S", "FN"))
-  show-traceability(("R", "S", "NF"))
 })
+
+// lo escondo porque quedaría feo ver que es una matriz identidad
+// #show-traceability(("R", "S", "NF"))
+
 

@@ -1,3 +1,5 @@
+// LTeX: enabled=false
+
 #let filename = sys.inputs.at("FILE", default: none)
 #assert(
   filename != none,

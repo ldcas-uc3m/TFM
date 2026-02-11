@@ -351,6 +351,7 @@ provided with the simulator.
 #algorithm(
   title: [CREATOR 5's instruction execution cycle],
   label: <alg:creator5-execution-cycle>,
+  width: 70%,
 )[
   + *if* $#raw("CAUSE") != 0$ *then* #alg-comment[Interrupt detection]
     + $#raw("EPC") <- #raw("PC")$
@@ -442,6 +443,7 @@ in `RT1`, and performs the interrupt hook (@alg:wepsim-hook). Upon receiving the
 #algorithm(
   title: [WepSIM's instruction execution cycle],
   label: <alg:wepsim-execution-cycle>,
+  width: 75%,
 )[
   + *if* $#raw("INT") != 0$ *then* #alg-comment[Interrupt detection]
     + $#raw("INTA") <- 1$

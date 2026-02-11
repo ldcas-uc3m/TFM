@@ -73,14 +73,15 @@ was added to represent the time spent finishing this and other required reports.
 The project had a total duration of 13 months, with a personal dedication of 25
 hours per week, totaling $#total-hours h$.
 
-#big-ass-table(
-  label: <fig:gantt>,
-  caption: [Gantt chart for the project],
-  {
-    import "/diagrams/gantt/gantt.typ": diagram as gantt-chart
-    gantt-chart
-  },
-)
+#big-ass-thing[
+  #figure(
+    caption: [Gantt chart for the project],
+    {
+      import "/diagrams/gantt/gantt.typ": diagram as gantt-chart
+      gantt-chart
+    },
+  ) <fig:gantt>
+]
 
 
 

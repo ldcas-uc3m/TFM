@@ -1,4 +1,5 @@
 #import "/utils.typ": *
+#import "/requirements/lib.typ": reqref
 
 = Design, Implementation, and Deployment <chap:design>
 This chapter provides a full description of the proposed solution. It details
@@ -124,19 +125,20 @@ action.
 
 // why? (syscall)
 One of the objectives of the interrupt feature in the simulator---as stated in
-#highlight[User Requirement XXX]---is for it to be "opt-in", that is, ensuring
-that the average user that doesn't need to understand interrupts in order to use
-the simulator's basic functionalities. The problem arises with the system calls,
-which _must_ be implemented with interrupts, but are part of the basic example
-programs of the simulator, as they enable communication with the keyboard and
-display. In CREATOR 5, the system call instructions#footnote[`ecall` instruction
-  in RISC-V, `syscall` instruction in MIPS-32.] doesn't make use of any type of
-interrupts or execution mode changes; instead, it emulates an operating system
-by implementing its functionality in the instruction
-definition#footnote[Currently, it uses a switch case that reads one or more
-  specific registers and calls the desired internal functions.]. The objective
-is to allow the user to implement its own interrupt handler, while also
-providing a "fallback" system that is transparent for the regular users.
+#reqref(("R", "U", "CA", "int-handlers"))---is for it to be "opt-in", that is,
+ensuring that the average user that doesn't need to understand interrupts in
+order to use the simulator's basic functionalities. The problem arises with the
+system calls, which _must_ be implemented with interrupts, but are part of the
+basic example programs of the simulator, as they enable communication with the
+keyboard and display. In CREATOR 5, the system call
+instructions#footnote[`ecall` instruction in RISC-V, `syscall` instruction in
+  MIPS-32.] doesn't make use of any type of interrupts or execution mode
+changes; instead, it emulates an operating system by implementing its
+functionality in the instruction definition#footnote[Currently, it uses a switch
+  case that reads one or more specific registers and calls the desired internal
+  functions.]. The objective is to allow the user to implement its own interrupt
+handler, while also providing a "fallback" system that is transparent for the
+regular users.
 
 // approaches
 There are two possible approaches to solving this: embedding a basic interrupt
@@ -237,9 +239,9 @@ executes the handler of all enabled devices once per cycle.
 
 == System Architecture <sec:sys-architecture>
 // big ol' refactor
-#highlight[As per User Requirement XXX,] the system architecture of CREATOR
-overhauled. The application was divided into three distinct modules: a _core_
-module, containing all the base functionality of the simulator, and two
+As per #reqref(("R", "U", "RE", "no-spagghetti-0")), the system architecture of
+CREATOR overhauled. The application was divided into three distinct modules: a
+_core_ module, containing all the base functionality of the simulator, and two
 "consumer" modules, the _Command-Line Interface_ (CLI) and the _Web
 Application_. Both consumer modules are separate applications that act as the
 interface between the user and the main system's functionality (the core
@@ -262,6 +264,8 @@ module)#footnote[Their details are out of the scope of this thesis, but they
 - _CAPI_: An API that defines functions to interact with the rest of the
   components of the system. Includes the plugin system.
 
+// no formal components using SRS... no time!
+
 #figure(
   image("/diagrams/architecture/core.svg", width: 90%),
   caption: [Core module architecture],
@@ -282,6 +286,7 @@ implements @alg:creator6-interrupt-handler.
 #algorithm(
   title: [Interrupt Manager resetting subroutine],
   label: <alg:interrupt-manager-reset>,
+  width: 95%,
 )[
   + *for-each* `type` *in* `interrupt_types` *do* #alg-comment[Enable all
       interrupts]

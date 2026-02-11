@@ -164,13 +164,11 @@
 }
 
 
-/// Put big-ass tables in a new page, rotated
+/// Put big-ass things in a new page, rotated
 ///
-/// - body (content): Argument to be passed to `lovelace:pseudocode-list`
-/// - title (content, none): Algorithm title
-/// - label (label, none): Figure label
+/// - body (content): Body
 /// -> content
-#let big-ass-table(table, caption: none, label: none) = page(
+#let big-ass-thing(body) = page(
   // TODO: visually rotate page, but keep the header on the short side
   // see: https://github.com/typst/typst/discussions/4138
   place(
@@ -178,16 +176,17 @@
     rotate(
       -90deg,
       reflow: true,
-      [
-        #figure(table, caption: caption, placement: none)
-        #if label != none {
-          assert(
-            type(label) == std.label,
-            message: "You must provide a label, e.g. `<alg:stuff>`",
-          )
-          label
-        }
-      ],
+      body,
+      // [
+      //   #figure(table, caption: caption, placement: none)
+      //   #if label != none {
+      //     assert(
+      //       type(label) == std.label,
+      //       message: "You must provide a label, e.g. `<alg:stuff>`",
+      //     )
+      //     label
+      //   }
+      // ],
     ),
   ),
 )

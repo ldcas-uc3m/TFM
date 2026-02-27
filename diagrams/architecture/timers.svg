@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   version="1.1"
+   id="svg1"
+   width="330"
+   height="238"
+   viewBox="0 0 330 238"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs1">
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath4">
+      <path
+         d="M 2.2078121e-6,-17 H 105.99999 V 6.9999974 H 2.2078121e-6 Z"
+         clip-rule="evenodd"
+         id="path4" />
+    </clipPath>
+  </defs>
+  <g
+     id="g1"
+     transform="translate(-7.9999997,-7.9999997)">
+    <path
+       id="path1"
+       d="M 0,0 H 330 V 238 H 0 Z"
+       style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       transform="translate(7.9999997,7.9999997)" />
+    <path
+       id="path2"
+       d="M -156.93359,-111 H 156.93359 V 111 H -156.93359"
+       style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:10;stroke-dasharray:none;stroke-opacity:1"
+       transform="matrix(0.99993436,0,0,0.99993436,172.92968,126.99218)" />
+    <path
+       id="path3"
+       d="m -156.93359,-111 c 113.546345,0 227.092693,0 313.86718,0 m -313.86718,0 c 100.878601,0 201.75721,0 313.86718,0 m 0,0 c 0,58.74987 0,117.499743 0,222 m 0,-222 c 0,46.382469 0,92.764933 0,222 m 0,0 c -114.897503,0 -229.79501,0 -313.86718,0 m 313.86718,0 c -106.779823,0 -213.55965,0 -313.86718,0 m 0,0 c 0,-85.072374 0,-170.144749 0,-222 m 0,222 c 0,-45.439949 0,-90.879896 0,-222"
+       style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:10;stroke-dasharray:none;stroke-opacity:1"
+       transform="matrix(0.99993436,0,0,0.99993436,172.92968,126.99218)" />
+    <g
+       id="g3" />
+    <text
+       id="text3"
+       xml:space="preserve"
+       transform="matrix(0.99993436,0,0,0.99993436,119.81598,44.997569)"
+       clip-path="url(#clipPath4)"><tspan
+         id="tspan3"
+         style="font-variant:normal;font-weight:700;font-size:16px;font-family:'Trebuchet MS';writing-mode:lr-tb;fill:#333333;fill-opacity:1;fill-rule:nonzero;stroke:none"
+         x="0"
+         dx="0 -0.59375006"
+         y="0">TimerManager</tspan></text>
+    <g
+       id="g4" />
+    <text
+       id="text4"
+       xml:space="preserve"
+       transform="matrix(0.99993436,0,0,0.99993436,28.005609,122.99244)"><tspan
+         id="tspan4"
+         style="font-variant:normal;font-weight:normal;font-size:16px;font-family:'Trebuchet MS';writing-mode:lr-tb;fill:#333333;fill-opacity:1;fill-rule:nonzero;stroke:none"
+         x="0"
+         y="0">+ constructor(actions)</tspan></text>
+    <g
+       id="g5" />
+    <text
+       id="text5"
+       xml:space="preserve"
+       transform="matrix(0.99993436,0,0,0.99993436,28.005609,146.99087)"><tspan
+         id="tspan5"
+         style="font-variant:normal;font-weight:normal;font-size:16px;font-family:'Trebuchet MS';writing-mode:lr-tb;fill:#333333;fill-opacity:1;fill-rule:nonzero;stroke:none"
+         x="0"
+         y="0">+ timerAdvance()</tspan></text>
+    <g
+       id="g6" />
+    <text
+       id="text6"
+       xml:space="preserve"
+       transform="matrix(0.99993436,0,0,0.99993436,28.005609,170.9893)"><tspan
+         id="tspan6"
+         style="font-variant:normal;font-weight:normal;font-size:16px;font-family:'Trebuchet MS';writing-mode:lr-tb;fill:#333333;fill-opacity:1;fill-rule:nonzero;stroke:none"
+         x="0"
+         y="0">+ timerHandler()</tspan></text>
+    <g
+       id="g7" />
+    <text
+       id="text7"
+       xml:space="preserve"
+       transform="matrix(0.99993436,0,0,0.99993436,28.005609,194.98772)"><tspan
+         id="tspan7"
+         style="font-variant:normal;font-weight:normal;font-size:16px;font-family:'Trebuchet MS';writing-mode:lr-tb;fill:#333333;fill-opacity:1;fill-rule:nonzero;stroke:none"
+         x="0"
+         y="0">+ timerIsEnabled()</tspan></text>
+    <g
+       id="g8" />
+    <text
+       id="text8"
+       xml:space="preserve"
+       transform="matrix(0.99993436,0,0,0.99993436,28.005609,218.98614)"><tspan
+         id="tspan8"
+         style="font-variant:normal;font-weight:normal;font-size:16px;font-family:'Trebuchet MS';writing-mode:lr-tb;fill:#333333;fill-opacity:1;fill-rule:nonzero;stroke:none"
+         x="0"
+         y="0">+ handle(currentCycles: number)</tspan></text>
+    <path
+       id="path8"
+       d="m -156.93359,-63 c 99.03862,0 198.077248,0 313.86718,0 m -313.86718,0 c 88.097668,0 176.195339,0 313.86718,0"
+       style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:10;stroke-dasharray:none;stroke-opacity:1"
+       transform="matrix(0.99993436,0,0,0.99993436,172.92968,126.99218)" />
+    <path
+       id="path9"
+       d="m -156.93359,-39 c 112.073692,0 224.147389,0 313.86718,0 m -313.86718,0 c 107.04834,0 214.09668,0 313.86718,0"
+       style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:10;stroke-dasharray:none;stroke-opacity:1"
+       transform="matrix(0.99993436,0,0,0.99993436,172.92968,126.99218)" />
+  </g>
+</svg>

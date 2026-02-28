@@ -1,3 +1,5 @@
+#import "utils.typ": *
+
 #import "@preview/touying:0.6.1": *
 #import themes.metropolis: *
 #import "@preview/numbly:0.1.0": numbly
@@ -18,7 +20,7 @@
     subtitle: [Trabajo de Fin de Máster],
     author: [Autor: Luis Daniel Casais Mezquida\
       Tutor: Alejandro Calderón Mateos],
-    date: [02 de febrero de 2026],
+    date: [02 de marzo de 2026],
     institution: [Máster en Ingeniería Informática -- Universidad Carlos III de
       Madrid],
   ),
@@ -34,11 +36,10 @@
 
 #set heading(numbering: numbly("{1}.", default: "1.1"))
 
+// "booktab" table style
 #show table: block.with(stroke: (y: 0.7pt))
-#set table(
-  row-gutter: 0.2em, // Row separation
-  stroke: (_, y) => if y == 0 { (bottom: 0.2pt) },
-)
+#set table(column-gutter: .2em, stroke: none)
+#set table.hline(stroke: 0.4pt)
 
 
 
@@ -49,14 +50,23 @@
 = Introducción
 == Motivación
 #slide[
+  -
+  - _Entorno de desarrollo integrado para formación e investigación en
+    procesadores RISC_ (#link(
+      "https://researchportal.uc3m.es/display/act562858",
+    )[PDC2023-145832-I00])
+    - Soporte interrupciones, temporizadores, dispositivos E/S en #link(
+        "https.//creatorsim.github.io",
+      )[CREATOR]
+    - Modernizar la aplicación
 ][
   #figure(
     grid(
-      columns: 2,
-      gutter: 10%,
-      image("img/arcos.png", width: 90%),
+      gutter: 5%,
+      image("img/arcos.png", width: 80%),
+      image("img/creator.png", width: 55%),
     ),
-    caption: [ARCOS],
+    // caption: [ARCOS],
   )
 ]
 
@@ -97,35 +107,13 @@
 
 
 
-== Resultados
-
-= Entorno socioeconómico
-== Presupuesto
-#figure(
-  caption: [Coste total],
-  table(
-    columns: (auto, auto),
-    align: (left + horizon, right + horizon),
-    table.header([*Concepto*], [*Coste*]),
-    [Recursos humanos ], [6908.46 €],
-    [Recursos materiales ], [369.20 €],
-    [Costes indirectos ], [5175.00 €],
-    table.hline(stroke: 0.3pt + black),
-    [*Total del proyecto* ], [*12452.66 €*],
-    table.hline(stroke: 0.3pt + black),
-    [Beneficio industrial (16%)], [1992.43€],
-    [IVA (21%) ], [2615.06€],
-    table.hline(stroke: 0.3pt + black),
-    [*Importe final* ], [*17478.56 €*],
-  ),
-)
 
 == Planificación
 #figure(
   caption: [Diagrama Gantt del proyecto],
   scale(
     {
-      import "/diagrams/gantt/gantt.typ": diagram as gantt-chart
+      import "/diagrams/gantt/gantt-short.typ": diagram as gantt-chart
       gantt-chart
     },
     85%,

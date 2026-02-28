@@ -285,7 +285,7 @@ third-party client, is #strong(money(total-offer)).
       (
         item.name,
         if i == 0 [--] else { $#{ item.inc * 100 } %$ },
-        if i == 0 [--] else { $money(item.partial) %$ },
+        if i == 0 [--] else { $money(item.partial)$ },
         money(item.agg),
       )
     },
@@ -294,7 +294,7 @@ third-party client, is #strong(money(total-offer)).
 
     [*TOTAL*],
     $#round(total-offer * 100 / total-costs) %$,
-    [],
+    money(total-increment),
     strong(money(total-offer)),
   ),
 ) <tab:offer-proposal>

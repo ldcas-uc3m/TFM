@@ -83,4 +83,6 @@
     .arr
 )
 
-#let total-offer = increments.map(i => i.partial).sum()
+#let total-increment = increments.map(i => i.partial).sum()
+
+#let total-offer = total-costs + total-increment

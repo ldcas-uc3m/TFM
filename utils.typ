@@ -2,11 +2,19 @@
 // LTeX: enabled=false
 
 #import "@preview/oxifmt:1.0.0": strfmt
-
 #import "@preview/metalogo:1.2.0": LaTeX, TeX
 
 
+
 /// Auxiliar table.header
+///
+/// Usage:
+/// ```typc
+/// table(
+///   // ...
+///   ..table-header([], ...),
+/// )
+/// ```
 #let table-header(..children, repeat: true) = {
   (table.header(..children, repeat: repeat), table.hline())
 }
@@ -49,7 +57,7 @@
 
   // don't show the figure caption, as we're already including it inside the
   // figure
-  // however, we don't set caption to `none`bc we want the caption to be shown
+  // however, we don't set caption to `none` bc we want the caption to be shown
   // in the list of algorithms
   #show figure.caption: {}
 
@@ -150,6 +158,7 @@
 
 /// Formats the specified quantity as a two-digit number
 #let round = calc.round.with(digits: 2)
+
 
 /// Formats the specified value as money.
 /// - value (int | float): Value to format

@@ -12,7 +12,7 @@
   advisors: ("Alejandro Calderón Mateos",),
   location: "Leganés, Madrid",
   thesis-type: "TFM",
-  date: datetime(year: 2026, month: 2, day: 20),
+  date: datetime(year: 2026, month: 2, day: 11),
   language: "en",
   style: "fancy",
   license: true,

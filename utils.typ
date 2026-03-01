@@ -25,8 +25,15 @@
 /// - body (content): The content to scale
 /// - width (ratio, auto): Desired width (relative to its container)
 /// - height (ratio, auto): Desired heigth (relative to its container)
+/// - text-size (length, auto): Desired text size. If `auto`, will use current text size.
 /// -> content
-#let scale-to-container(body, width: auto, height: auto) = layout(ly => {
+#let scale-to-container(
+  body,
+  width: auto,
+  height: auto,
+  text-size: auto,
+) = layout(ly => {
+  set text(size: if text-size == auto { text.size } else { text-size })
   if width == auto and height == auto { return body }
 
   scale(

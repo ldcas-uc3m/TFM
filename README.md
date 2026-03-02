@@ -20,6 +20,7 @@ Universidad Carlos III de Madrid
 > - You can check out your system's fonts using `typst fonts`.
 
 
+### Report
 Install [Typst](https://github.com/typst/typst?tab=readme-ov-file#installation) and run:
 ```
 typst c report.typ --pdf-standard=a-4
@@ -30,3 +31,19 @@ typst c report.typ --pdf-standard=a-4
 
 > [!TIP]
 > For [Neovim](https://neovim.io/) users, it is recommended to use the [typst-preview.nvim](https://github.com/chomosuke/typst-preview.nvim) plugin.
+
+
+### Presentation
+This presentation uses [Touying](https://touying-typ.github.io/), a [Typst](https://typst.app) presentation package.  
+You first need to install the [Typst](https://typst.app) compiler (version, at the time of writting, 0.14.0).
+
+Handout (default) mode:
+```
+typst c presentation.typ
+```
+
+Presentation mode:
+```
+typst c --input PRESENTATION=1 presentation.typ
+```
+

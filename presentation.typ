@@ -179,7 +179,7 @@ _didaCtic and geneRic assEmbly progrAmming simulaTOR_
 
 - Interno _o_ externo
 #pause
-- Diferentes tipos:#pause
+- Diferentes tipos:
   - _Maskable_/_Non-maskable_#pause
   - _Software_/externos/excepciones#pause
   - Síncronos/asíncronos#pause
@@ -263,9 +263,9 @@ _didaCtic and geneRic assEmbly progrAmming simulaTOR_
 == Arquitectura
 #slide[
   - Nuevos módulos en ejecutor:
-  + Interrupt Manager
-  + Timer Manager
-  + Device Manager
+    + Interrupt Manager
+    + Timer Manager
+    + Device Manager
   #pause
   - Modificar ciclo ejecución de instrucción
 ][
@@ -406,6 +406,8 @@ Modelo "genérico":
 - `advance`
 - `handler`
 - `is_enabled`, `enable`, `disable`
+
+#pause
 
 ```yaml
 timer:

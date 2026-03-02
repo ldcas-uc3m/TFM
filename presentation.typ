@@ -243,7 +243,7 @@ _didaCtic and geneRic assEmbly progrAmming simulaTOR_
 #slide[
 
   - Comunicación a través de memoria
-    - Típicamente _on-device_
+    - Típicamente registros _on-device_
   #pause
   - Dos formas principales de direccionamiento:
     - "Puertos": Requiere instrucciones específicas (_in_/_out_)#pause
@@ -293,8 +293,8 @@ Modelo "genérico" de interrupciones.
 #pause
 - Conjunto de acciones comunes
   - `check`, `create`
-  - `is_enabled`, `is_disabled`, `is_global_enabled`, `is_global_disabled`
   - `enable`, `disable`, `global_enable`, `global_disable`
+  - `is_enabled`, `is_disabled`, `is_global_enabled`, `is_global_disabled`
   - `clear`, `global_clear`
 - Definidos en configuración de arquitectura
 #pause
@@ -303,6 +303,7 @@ Modelo "genérico" de interrupciones.
     `NonMaskable`
 
 #v(1em)
+#pause
 
 ```yaml
 interrupts:
@@ -359,12 +360,22 @@ Dos soluciones:
   - Facilmente extensible
   - Mayor control para interactuar con el sistema
 
-
 #pagebreak()
 
-#figure(
-  image("diagrams/architecture/interrupts.svg", width: 42%),
-)
+```yaml
+  custom: |
+    CAPI.INTERRUPTS.globalDisable();
+    CAPI.INTERRUPTS.setKernelMode();
+    registers.epc = registers.pc;
+
+    // jump to handler
+    if (registers.mtvec & 1n) { // vectored mode
+      registers.pc =
+        (registers.mtvec >> 2n) + 4 * (registers.mcause & (2 ** 32 - 1));
+    } else { // direct mode
+      registers.pc = registers.mtvec >> 2n
+    }
+```
 
 #pagebreak()
 
@@ -384,20 +395,9 @@ Dos soluciones:
 
 #pagebreak()
 
-```yaml
-  custom: |
-    CAPI.INTERRUPTS.globalDisable();
-    CAPI.INTERRUPTS.setKernelMode();
-    registers.epc = registers.pc;
-
-    // jump to handler
-    if (registers.mtvec & 1n) { // vectored mode
-      registers.pc =
-        (registers.mtvec >> 2n) + 4 * (registers.mcause & (2 ** 32 - 1));
-    } else { // direct mode
-      registers.pc = registers.mtvec >> 2n
-    }
-```
+#figure(
+  image("diagrams/architecture/interrupts.svg", width: 42%),
+)
 
 
 == Temporizadores
@@ -426,7 +426,7 @@ timer:
 #algorithm(
   title: [Timer handling subroutine],
 )[
-  + *if* _not_ `timerEnabled()` *then*
+  + *if* _not_ `is_enabled()` *then*
     + *return*
   - *end if*
   + *if* $#raw("clk_cycles") % #raw("tick_cycles") = 0$ *then*
@@ -533,10 +533,10 @@ Conocimientos adquiridos:
 - Refactorizado
 
 == Trabajos futuros
-- Múltiples interrupciones por ciclo
-- Interfaz gráfica para dispositivos
-- Nuevos dispositivos (LEDs, etc.)
-- Soporte para kernel
+- Múltiples interrupciones por ciclo#pause
+- Interfaz gráfica para dispositivos#pause
+- Nuevos dispositivos (LEDs, etc.)#pause
+- Soporte para kernel#pause
 - Múltiples temporizadores (de forma más explícita)
 
 
